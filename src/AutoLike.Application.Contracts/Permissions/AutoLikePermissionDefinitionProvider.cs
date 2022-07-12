@@ -17,6 +17,11 @@ public class AutoLikePermissionDefinitionProvider : PermissionDefinitionProvider
         giftCodeGroup.AddPermission(AutoLikePermissions.CreatePromotionPermission, L("Permission:CreateGiftCode"));
         giftCodeGroup.AddPermission(AutoLikePermissions.UpdatePromotionPermission, L("Permission:UpdateGiftCode"));
         giftCodeGroup.AddPermission(AutoLikePermissions.DeletePromotionPermission, L("Permission:DeleteGiftCode"));
+
+        var serviceGroup = context.AddGroup(AutoLikePermissions.ServicePermissionGroup);
+        serviceGroup.AddPermission(AutoLikePermissions.CreateServicePermission, L("Permission:CreateService"));
+        serviceGroup.AddPermission(AutoLikePermissions.UpdateServicePermission, L("Permission:UpdateService"));
+        serviceGroup.AddPermission(AutoLikePermissions.DeleteServicePermission, L("Permission:DeleteService"));
     }
 
     private static LocalizableString L(string name)

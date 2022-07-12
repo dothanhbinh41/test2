@@ -1,4 +1,6 @@
-﻿using AutoLike.Promotions;
+﻿using AutoLike.Gifts;
+using AutoLike.Promotions;
+using AutoLike.Services;
 using MongoDB.Driver;
 using Volo.Abp.Data;
 using Volo.Abp.MongoDB;
@@ -13,6 +15,8 @@ public class AutoLikeMongoDbContext : AbpMongoDbContext
      */
 
     public IMongoCollection<Promotion> Promotions => Collection<Promotion>();
+    public IMongoCollection<GiftCode> GiftCodes => Collection<GiftCode>();
+    public IMongoCollection<Service> Services => Collection<Service>();
 
     protected override void CreateModel(IMongoModelBuilder modelBuilder)
     {

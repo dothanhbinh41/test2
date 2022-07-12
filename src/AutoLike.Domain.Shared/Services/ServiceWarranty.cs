@@ -4,7 +4,7 @@ using System.Text;
 
 namespace AutoLike.Services
 {
-    public enum Warranty
+    public enum ServiceWarranty
     {
         NoWarranty, OneMonth, TwoMonths, ThreeMonths, SixMonths, OneYear, TwoYears
     }

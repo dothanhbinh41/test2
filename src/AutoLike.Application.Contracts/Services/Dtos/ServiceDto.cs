@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Volo.Abp.Domain.Entities;
+using Volo.Abp.Application.Dtos;
 
-namespace AutoLike.Services
+namespace AutoLike.Services.Dtos
 {
-    public class Service : Entity<Guid>
+    public class ServiceDto : EntityDto<Guid>
     {
         public string Name { get; set; }
         public string Code => $"{Group.ToString().ToLower()}_{Name?.ToLower()?.Replace("\\s", "")}";
