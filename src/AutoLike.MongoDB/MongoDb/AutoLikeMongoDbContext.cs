@@ -1,4 +1,5 @@
-﻿using AutoLike.Gifts;
+﻿using AutoLike.Financials;
+using AutoLike.Gifts;
 using AutoLike.Promotions;
 using AutoLike.Services;
 using MongoDB.Driver;
@@ -17,6 +18,7 @@ public class AutoLikeMongoDbContext : AbpMongoDbContext
     public IMongoCollection<Promotion> Promotions => Collection<Promotion>();
     public IMongoCollection<GiftCode> GiftCodes => Collection<GiftCode>();
     public IMongoCollection<Service> Services => Collection<Service>();
+    public IMongoCollection<Financial> Financials => Collection<Financial>();
 
     protected override void CreateModel(IMongoModelBuilder modelBuilder)
     {

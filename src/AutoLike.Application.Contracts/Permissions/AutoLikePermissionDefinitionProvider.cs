@@ -21,7 +21,11 @@ public class AutoLikePermissionDefinitionProvider : PermissionDefinitionProvider
         var serviceGroup = context.AddGroup(AutoLikePermissions.ServicePermissionGroup);
         serviceGroup.AddPermission(AutoLikePermissions.CreateServicePermission, L("Permission:CreateService"));
         serviceGroup.AddPermission(AutoLikePermissions.UpdateServicePermission, L("Permission:UpdateService"));
-        serviceGroup.AddPermission(AutoLikePermissions.DeleteServicePermission, L("Permission:DeleteService"));
+        serviceGroup.AddPermission(AutoLikePermissions.DeleteServicePermission, L("Permission:DeleteService"));        
+        
+        var financial = context.AddGroup(AutoLikePermissions.FinancialPermissionGroup);
+        financial.AddPermission(AutoLikePermissions.SearchFinancialPermission, L("Permission:Search"));
+        financial.AddPermission(AutoLikePermissions.ConfirmFinancialPermission, L("Permission:Confirm")); 
     }
 
     private static LocalizableString L(string name)

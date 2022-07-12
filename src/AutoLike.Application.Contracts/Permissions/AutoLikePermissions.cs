@@ -17,6 +17,10 @@ public static class AutoLikePermissions
     public const string CreateServicePermission = $"{ServicePermissionGroup}.Create";
     public const string UpdateServicePermission = $"{ServicePermissionGroup}.Update";
     public const string DeleteServicePermission = $"{ServicePermissionGroup}.Delete";
+
+    public const string FinancialPermissionGroup = $"Financial";
+    public const string SearchFinancialPermission = $"{FinancialPermissionGroup}.Search";
+    public const string ConfirmFinancialPermission = $"{FinancialPermissionGroup}.Confirm"; 
     //Add your own permission names. Example:
     //public const string MyPermission1 = GroupName + ".MyPermission1";
 }

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace AutoLike.Services
+namespace AutoLike.Orders
 {
-    public enum ServiceStatus
+    public enum OrderStatus
     {
         Active,  // Đang làm việc, hoạt đông
         InActive,  // Đã nghỉ, ngưng hoạt động
