@@ -10,7 +10,7 @@ namespace AutoLike.Gifts
 {
     public class UserGiftCode : AggregateRoot<Guid>
     {
-        public string GiftCodeId { get; set; }
+        public Guid GiftCodeId { get; set; }
         public string Code { get; set; }
         public decimal Value { get; set; } 
         public UserBase User { set; get; }

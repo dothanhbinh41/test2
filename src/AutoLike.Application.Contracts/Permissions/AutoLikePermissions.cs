@@ -8,7 +8,10 @@ public static class AutoLikePermissions
     public const string UpdatePromotionPermission = $"{PromotionPermissionGroup}.Update";
     public const string DeletePromotionPermission = $"{PromotionPermissionGroup}.Delete";
 
-
+    public const string GiftCodePermissionGroup = $"GiftCode";
+    public const string CreateGiftCodePermission = $"{GiftCodePermissionGroup}.Create";
+    public const string UpdateGiftCodePermission = $"{GiftCodePermissionGroup}.Update";
+    public const string DeleteGiftCodePermission = $"{GiftCodePermissionGroup}.Delete";
     //Add your own permission names. Example:
     //public const string MyPermission1 = GroupName + ".MyPermission1";
 }
