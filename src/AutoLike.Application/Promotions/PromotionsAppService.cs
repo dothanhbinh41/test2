@@ -1,4 +1,5 @@
-﻿using AutoLike.Promotions.Dtos;
+﻿using AutoLike.Permissions;
+using AutoLike.Promotions.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
@@ -8,28 +9,30 @@ using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
+using static Volo.Abp.Identity.IdentityPermissions;
 
 namespace AutoLike.Promotions
 {
+    [Authorize]
     public class PromotionsAppService : CrudAppService<Promotion, PromotionDto, Guid, PagedResultRequestDto, CreatePromotionDto, PromotionDto>, IPromotionsAppService
     {
         public PromotionsAppService(IRepository<Promotion, Guid> repository) : base(repository)
         {
         }
 
-        [Authorize]
+        [Authorize(AutoLikePermissions.CreatePromotionPermission)]
         public override Task<PromotionDto> CreateAsync(CreatePromotionDto input)
         {
             return base.CreateAsync(input);
         }
 
-        [Authorize]
+        [Authorize(AutoLikePermissions.DeletePromotionPermission)]
         public override Task DeleteAsync(Guid id)
         {
             return base.DeleteAsync(id);
         }
 
-        [Authorize]
+        [Authorize(AutoLikePermissions.UpdatePromotionPermission)]
         public override Task<PromotionDto> UpdateAsync(Guid id, PromotionDto input)
         {
             return base.UpdateAsync(id, input);
