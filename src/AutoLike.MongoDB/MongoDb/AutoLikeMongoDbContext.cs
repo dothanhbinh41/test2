@@ -1,4 +1,6 @@
-﻿using Volo.Abp.Data;
+﻿using AutoLike.Promotions;
+using MongoDB.Driver;
+using Volo.Abp.Data;
 using Volo.Abp.MongoDB;
 
 namespace AutoLike.MongoDB;
@@ -9,6 +11,8 @@ public class AutoLikeMongoDbContext : AbpMongoDbContext
     /* Add mongo collections here. Example:
      * public IMongoCollection<Question> Questions => Collection<Question>();
      */
+
+    public IMongoCollection<Promotion> Promotions => Collection<Promotion>();
 
     protected override void CreateModel(IMongoModelBuilder modelBuilder)
     {
