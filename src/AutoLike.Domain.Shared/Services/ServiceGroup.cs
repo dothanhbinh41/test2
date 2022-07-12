@@ -6,6 +6,6 @@ namespace AutoLike.Services
 {
     public enum ServiceGroup
     {
-        Facebook, Tiktok, Instagram, Shopee
+        Facebook, Tiktok, Instagram, Shopee, Lazada, Youtube, Autofarmer
     }
 }

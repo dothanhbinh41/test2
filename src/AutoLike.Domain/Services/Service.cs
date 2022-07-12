@@ -7,10 +7,10 @@ using Volo.Abp.Domain.Entities;
 
 namespace AutoLike.Services
 {
-    public class Service : AggregateRoot<Guid>
+    public class Service : Entity<Guid>
     {
         public string Name { get; set; }
-        public string Code { get; set; }
+        public string Code => $"{Group.ToString().ToLower()}_{Name?.ToLower()?.Replace("\\s", "")}";
         public ServiceGroup Group { get; set; }
         public decimal Price { get; set; }
     }
