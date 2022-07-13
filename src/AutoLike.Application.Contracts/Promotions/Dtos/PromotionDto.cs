@@ -10,7 +10,7 @@ namespace AutoLike.Promotions.Dtos
         public double Begin { get; set; }
         public double End { get; set; }
         public double Value { get; set; }
-        public PromotionValueType ValueType { get; set; }
+        public TypeValue TypeValue { get; set; }
         public bool IsActived { get; set; }
     }
 }

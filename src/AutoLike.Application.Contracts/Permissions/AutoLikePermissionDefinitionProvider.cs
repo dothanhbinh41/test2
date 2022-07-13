@@ -25,7 +25,12 @@ public class AutoLikePermissionDefinitionProvider : PermissionDefinitionProvider
         
         var financial = context.AddGroup(AutoLikePermissions.FinancialPermissionGroup);
         financial.AddPermission(AutoLikePermissions.SearchFinancialPermission, L("Permission:Search"));
-        financial.AddPermission(AutoLikePermissions.ConfirmFinancialPermission, L("Permission:Confirm")); 
+        financial.AddPermission(AutoLikePermissions.ConfirmFinancialPermission, L("Permission:Confirm"));
+
+        var warrantyGroup = context.AddGroup(AutoLikePermissions.ServicePermissionGroup);
+        warrantyGroup.AddPermission(AutoLikePermissions.CreateWarrantyPermission, L("Permission:CreateWarranty"));
+        warrantyGroup.AddPermission(AutoLikePermissions.UpdateWarrantyPermission, L("Permission:UpdateWarranty"));
+        warrantyGroup.AddPermission(AutoLikePermissions.DeleteWarrantyPermission, L("Permission:DeleteWarranty"));
     }
 
     private static LocalizableString L(string name)

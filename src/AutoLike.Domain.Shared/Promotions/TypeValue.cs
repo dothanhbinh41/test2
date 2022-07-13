@@ -4,7 +4,7 @@ using System.Text;
 
 namespace AutoLike.Promotions
 {
-    public enum PromotionValueType
+    public enum TypeValue
     {
         Absolute, // 
         Relative  // in percent

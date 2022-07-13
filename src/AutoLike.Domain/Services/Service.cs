@@ -13,5 +13,6 @@ namespace AutoLike.Services
         public string Code => $"{Group.ToString().ToLower()}_{Name?.ToLower()?.Replace("\\s", "")}";
         public ServiceGroup Group { get; set; }
         public double Price { get; set; }
+        public ServiceWarranty[] Warranties { set; get; }
     }
 }
