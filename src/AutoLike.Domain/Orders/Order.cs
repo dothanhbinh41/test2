@@ -1,10 +1,6 @@
 ﻿using AutoLike.Services;
 using AutoLike.Users;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Volo.Abp.Domain.Entities;
 
 namespace AutoLike.Orders
@@ -25,7 +21,8 @@ namespace AutoLike.Orders
     public class OrderInformation : Service
     {
         public string UId { get; set; }
-        public ServiceWarranty ServiceWarranty { set; get; }
+        public Warranty Warranty { set; get; }
+        public Speed Speed { set; get; }
     }
 
     public class OrderPrice

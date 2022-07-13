@@ -1,5 +1,4 @@
-﻿using AutoLike.Warranties;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +13,9 @@ namespace AutoLike.Services
         public string Code => $"{Group.ToString().ToLower()}_{Name?.ToLower()?.Replace("\\s", "")}";
         public ServiceGroup Group { get; set; }
         public double Price { get; set; }
-        public Warranty[] Warranties { set; get; }
+        public Warranty[] Warranties { set; get; } 
+        public Speed[] Speeds { get; set; }
+        public uint MinQuantity { get; set; }
+        public uint MaxQuantity { get; set; } = uint.MaxValue; 
     }
 }

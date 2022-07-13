@@ -2,7 +2,6 @@
 using AutoLike.Gifts;
 using AutoLike.Promotions;
 using AutoLike.Services;
-using AutoLike.Warranties;
 using MongoDB.Driver;
 using Volo.Abp.Data;
 using Volo.Abp.Identity;
@@ -27,9 +26,9 @@ public class AutoLikeMongoDbContext : AbpMongoDbContext
     {
         base.CreateModel(modelBuilder);
 
-        modelBuilder.Entity<IdentityUser>(b =>
-        {
-            b.P
-        });
+        //modelBuilder.Entity<IdentityUser>(b =>
+        //{
+            
+        //});
     }
 }

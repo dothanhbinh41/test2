@@ -2,15 +2,18 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Volo.Abp.Application.Dtos;
 
-namespace AutoLike.Warranties.Dtos
+namespace AutoLike.Services
 {
-    public class WarrantyDto : EntityDto<Guid>
+    public struct Warranty
     {
         public WarrantyTimeUnit TimeUnit { get; set; }
         public int Time { get; set; }
-        public double Value { get; set; }
+        public double Price { get; set; }
         public TypeValue TypeValue { get; set; }
+    }
+    public enum WarrantyTimeUnit
+    {
+        Day, Week, Month, Year
     }
 }
