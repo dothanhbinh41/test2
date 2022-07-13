@@ -76,7 +76,7 @@ namespace AutoLike.Financials
                     session.AbortTransaction();
                     throw new UserFriendlyException("");
                 }
-                user.SetBalance(fin.Amount);
+                user.SetBalance(fin.Amount + user.GetBalance());
                 var updated = await userRepository.UpdateAsync(user);
                 session.CommitTransaction();
                 return ObjectMapper.Map<Financial, FinancialDto>(fin);
