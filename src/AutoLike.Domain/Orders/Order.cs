@@ -9,11 +9,10 @@ namespace AutoLike.Orders
     {
         public string Code { set; get; }
         public UserBase User { get; set; }
-        public OrderInformation Info { get; set; }
-        public OrderPrice Price { get; set; }
+        public OrderInformation Info { get; set; } 
         public OrderStatus Status { set; get; }
-        public OrderProcess Process { get; set; }
-        public OrderWarranty[] OrderWarranties { get; set; } 
+        //public OrderProcess[] OrderProcess { get; set; }
+        //public OrderWarranty[] OrderWarranties { get; set; } 
         public int Quantity { get; set; }
         public int CompletedQuantity { get; set; }
     }
@@ -24,12 +23,7 @@ namespace AutoLike.Orders
         public Warranty Warranty { set; get; }
         public Speed Speed { set; get; }
     }
-
-    public class OrderPrice
-    {
-
-    }
-
+     
     public class OrderProcess
     {
 

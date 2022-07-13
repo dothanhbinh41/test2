@@ -10,5 +10,6 @@ namespace AutoLike.Orders.Dtos
     {
         public string UId { get; set; }
         public Warranty Warranty { set; get; }
+        public Speed Speed { set; get; }
     }
 }
