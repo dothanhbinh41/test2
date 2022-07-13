@@ -1,5 +1,6 @@
 ﻿using AutoLike.Financials.Dtos;
 using AutoLike.Permissions;
+using AutoLike.Promotions;
 using AutoLike.Transactions;
 using AutoLike.Users;
 using Microsoft.AspNetCore.Authorization;
@@ -19,18 +20,21 @@ namespace AutoLike.Financials
     [Authorize]
     public class FinancialAppService : AutoLikeAppService, IFinancialAppService
     {
+        private readonly IRepository<Promotion, Guid> promotionRepository;
         private readonly IRepository<Financial, Guid> financialRepository;
         private readonly IRepository<Transaction, Guid> transactionRepository;
         private readonly IRepository<IdentityUser, Guid> userRepository;
         private readonly IMongoClient mongoClient;
 
         public FinancialAppService(
+            IRepository<Promotion, Guid> promotionRepository,
             IRepository<Financial, Guid> financialRepository,
             IRepository<Transaction, Guid> transactionRepository,
             IRepository<IdentityUser, Guid> userRepository,
 
             IMongoClient mongoClient)
         {
+            this.promotionRepository = promotionRepository;
             this.financialRepository = financialRepository;
             this.transactionRepository = transactionRepository;
             this.userRepository = userRepository;
@@ -59,7 +63,7 @@ namespace AutoLike.Financials
                     Value = fin.Amount,
                     Information = fin
                 });
-                 
+
                 if (trans == null)
                 {
                     session.AbortTransaction();
@@ -86,7 +90,13 @@ namespace AutoLike.Financials
                 throw new UserFriendlyException("");
             }
 
+            var promotion = await promotionRepository.FindAsync(d => d.IsActived && request.Amount >= d.Begin && request.Amount <= d.End);
+
             var fin = ObjectMapper.Map<DepositRequestDto, Financial>(request);
+            if (promotion != null)
+            {
+                fin.Promotion = promotion;
+            }
             var obj = await financialRepository.InsertAsync(fin);
             return ObjectMapper.Map<Financial, FinancialDto>(obj);
         }

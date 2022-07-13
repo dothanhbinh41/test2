@@ -9,9 +9,9 @@ namespace AutoLike.Promotions
 {
     public class Promotion : AggregateRoot<Guid>
     {
-        public double Begin { get; set; }
-        public double End { get; set; }
-        public double Value { get; set; }
+        public decimal Begin { get; set; }
+        public decimal End { get; set; }
+        public decimal Value { get; set; }
         public TypeValue TypeValue { get; set; }
         public bool IsActived { get; set; } = true;
     }
