@@ -8,7 +8,6 @@ namespace AutoLike.Orders
 {
     public interface ITransactionInformation
     {
-        Guid Id { get; }
-        string Code { set; get; } 
+        Guid Id { get; } 
     }
 }

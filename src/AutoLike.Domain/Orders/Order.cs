@@ -6,8 +6,7 @@ using Volo.Abp.Domain.Entities;
 namespace AutoLike.Orders
 {
     public class Order : AggregateRoot<Guid>, ITransactionInformation
-    {
-        public string Code { set; get; }
+    { 
         public UserBase User { get; set; }
         public OrderInformation Info { get; set; } 
         public OrderStatus Status { set; get; }

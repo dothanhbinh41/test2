@@ -12,8 +12,7 @@ using Volo.Abp.Domain.Entities.Auditing;
 namespace AutoLike.Financials
 {
     public class Financial : FullAuditedAggregateRoot<Guid>, ITransactionInformation
-    {
-        public string Code { set; get; }
+    { 
         public UserBase User { get; set; }
         public decimal Amount { get; set; }
         public FinancialStatus Status { get; set; }
