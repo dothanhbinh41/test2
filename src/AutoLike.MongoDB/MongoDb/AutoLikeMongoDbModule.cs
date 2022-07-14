@@ -34,7 +34,7 @@ public class AutoLikeMongoDbModule : AbpModule
 
         Configure<AbpUnitOfWorkDefaultOptions>(options =>
         {
-            options.TransactionBehavior = UnitOfWorkTransactionBehavior.Enabled;
+            options.TransactionBehavior = UnitOfWorkTransactionBehavior.Disabled;
         });
     }
 }

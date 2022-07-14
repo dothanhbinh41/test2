@@ -20,10 +20,5 @@ public static class AutoLikePermissions
 
     public const string FinancialPermissionGroup = $"Financial";
     public const string SearchFinancialPermission = $"{FinancialPermissionGroup}.Search";
-    public const string ConfirmFinancialPermission = $"{FinancialPermissionGroup}.Confirm";
-
-    public const string WarrantyGroup = $"Warranty";
-    public const string CreateWarrantyPermission = $"{WarrantyGroup}.Create";
-    public const string UpdateWarrantyPermission = $"{WarrantyGroup}.Update";
-    public const string DeleteWarrantyPermission = $"{WarrantyGroup}.Delete";
+    public const string ConfirmFinancialPermission = $"{FinancialPermissionGroup}.Confirm"; 
 }

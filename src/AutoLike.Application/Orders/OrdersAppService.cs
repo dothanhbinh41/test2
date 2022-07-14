@@ -75,6 +75,12 @@ namespace AutoLike.Orders
                 throw new UserFriendlyException("");
             }
 
+            var speedAvailable = service.Speeds.Any(c => c.Equals(request.Speed));
+            var warrantyAvailable = service.Warranties.Any(c => c.Equals(request.Warranty));
+            if (!speedAvailable || !warrantyAvailable)
+            {
+                throw new UserFriendlyException("");
+            }
             var order = new Order
             {
                 User = CurrentUser.ToBase(),
@@ -84,7 +90,8 @@ namespace AutoLike.Orders
                 {
                     Warranty = request.Warranty,
                     Speed = request.Speed
-                }
+                },
+                Price = request.Quantity * (request.Speed.Price + request.Warranty.Price)
             };
 
             using (var session = mongoClient.StartSession())

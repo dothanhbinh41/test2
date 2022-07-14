@@ -2,10 +2,11 @@
 using AutoLike.Users;
 using System;
 using Volo.Abp.Domain.Entities;
+using Volo.Abp.Domain.Entities.Auditing;
 
 namespace AutoLike.Orders
 {
-    public class Order : AggregateRoot<Guid>, ITransactionInformation
+    public class Order : FullAuditedAggregateRoot<Guid>, ITransactionInformation
     {
         public UserBase User { get; set; }
         public OrderInformation Info { get; set; }

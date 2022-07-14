@@ -76,7 +76,7 @@ namespace AutoLike.Services
                 return;
             }
 
-            await serviceRepository.InsertManyAsync(DefaultServices);
+           // await serviceRepository.InsertManyAsync(DefaultServices);
         }
     }
 }

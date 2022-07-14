@@ -8,29 +8,24 @@ public class AutoLikePermissionDefinitionProvider : PermissionDefinitionProvider
 {
     public override void Define(IPermissionDefinitionContext context)
     {
-        var promotionGroup = context.AddGroup(AutoLikePermissions.PromotionPermissionGroup);
-        promotionGroup.AddPermission(AutoLikePermissions.CreatePromotionPermission, L("Permission:CreatePromotion"));
-        promotionGroup.AddPermission(AutoLikePermissions.UpdatePromotionPermission, L("Permission:UpdatePromotion"));
-        promotionGroup.AddPermission(AutoLikePermissions.DeletePromotionPermission, L("Permission:DeletePromotion"));        
-        
-        var giftCodeGroup = context.AddGroup(AutoLikePermissions.GiftCodePermissionGroup);
-        giftCodeGroup.AddPermission(AutoLikePermissions.CreatePromotionPermission, L("Permission:CreateGiftCode"));
-        giftCodeGroup.AddPermission(AutoLikePermissions.UpdatePromotionPermission, L("Permission:UpdateGiftCode"));
-        giftCodeGroup.AddPermission(AutoLikePermissions.DeletePromotionPermission, L("Permission:DeleteGiftCode"));
+        var promotionGroup = context.AddGroup(AutoLikePermissions.PromotionPermissionGroup, L("Promotion"));
+        promotionGroup.AddPermission(AutoLikePermissions.CreatePromotionPermission, L("Create"));
+        promotionGroup.AddPermission(AutoLikePermissions.UpdatePromotionPermission, L("Update"));
+        promotionGroup.AddPermission(AutoLikePermissions.DeletePromotionPermission, L("Delete"));
 
-        var serviceGroup = context.AddGroup(AutoLikePermissions.ServicePermissionGroup);
-        serviceGroup.AddPermission(AutoLikePermissions.CreateServicePermission, L("Permission:CreateService"));
-        serviceGroup.AddPermission(AutoLikePermissions.UpdateServicePermission, L("Permission:UpdateService"));
-        serviceGroup.AddPermission(AutoLikePermissions.DeleteServicePermission, L("Permission:DeleteService"));        
-        
-        var financial = context.AddGroup(AutoLikePermissions.FinancialPermissionGroup);
-        financial.AddPermission(AutoLikePermissions.SearchFinancialPermission, L("Permission:Search"));
-        financial.AddPermission(AutoLikePermissions.ConfirmFinancialPermission, L("Permission:Confirm"));
+        var giftCodeGroup = context.AddGroup(AutoLikePermissions.GiftCodePermissionGroup, L("GiftCode"));
+        giftCodeGroup.AddPermission(AutoLikePermissions.CreateGiftCodePermission, L("Create"));
+        giftCodeGroup.AddPermission(AutoLikePermissions.UpdateGiftCodePermission, L("Update"));
+        giftCodeGroup.AddPermission(AutoLikePermissions.DeleteGiftCodePermission, L("Delete"));
 
-        var warrantyGroup = context.AddGroup(AutoLikePermissions.ServicePermissionGroup);
-        warrantyGroup.AddPermission(AutoLikePermissions.CreateWarrantyPermission, L("Permission:CreateWarranty"));
-        warrantyGroup.AddPermission(AutoLikePermissions.UpdateWarrantyPermission, L("Permission:UpdateWarranty"));
-        warrantyGroup.AddPermission(AutoLikePermissions.DeleteWarrantyPermission, L("Permission:DeleteWarranty"));
+        var serviceGroup = context.AddGroup(AutoLikePermissions.ServicePermissionGroup, L("Service"));
+        serviceGroup.AddPermission(AutoLikePermissions.CreateServicePermission, L("Create"));
+        serviceGroup.AddPermission(AutoLikePermissions.UpdateServicePermission, L("Update"));
+        serviceGroup.AddPermission(AutoLikePermissions.DeleteServicePermission, L("Delete"));
+
+        var financial = context.AddGroup(AutoLikePermissions.FinancialPermissionGroup, L("Financial"));
+        financial.AddPermission(AutoLikePermissions.SearchFinancialPermission, L("Search"));
+        financial.AddPermission(AutoLikePermissions.ConfirmFinancialPermission, L("Confirm"));
     }
 
     private static LocalizableString L(string name)

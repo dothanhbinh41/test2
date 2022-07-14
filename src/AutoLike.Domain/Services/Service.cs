@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Domain.Entities;
+using Volo.Abp.Domain.Entities.Auditing;
 
 namespace AutoLike.Services
 {
-    public class Service : Entity<Guid>
+    public class Service : FullAuditedAggregateRoot<Guid>
     {
         public string Name { get; set; }
         public string Code => $"{Group.ToString().ToLower()}_{Name?.ToLower()?.Replace("\\s", "")}";

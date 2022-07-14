@@ -20,7 +20,7 @@ namespace AutoLike.Promotions
         {
         }
 
-        [Authorize(AutoLikePermissions.CreatePromotionPermission)]
+        [Authorize("Promotion.Create")]
         public override Task<PromotionDto> CreateAsync(CreatePromotionDto input)
         {
             return base.CreateAsync(input);
