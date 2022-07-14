@@ -17,8 +17,8 @@ namespace AutoLike.Transactions
 {
     public interface ITransactionService : ITransientDependency
     {
-        Task TranferToUserAsync(UserBase user, decimal amount, ITransactionInformation info, IClientSessionHandle session);
-        Task TranferFromUserAsync(UserBase user, decimal amount, ITransactionInformation info, IClientSessionHandle session);
+        Task TranferToUserAsync(UserBase user, decimal amount, ITransactionInformation info, TransactionType TransactionType, IClientSessionHandle session);
+        Task TranferFromUserAsync(UserBase user, decimal amount, ITransactionInformation info, TransactionType TransactionType, IClientSessionHandle session);
     }
     public class TransactionService : ITransactionService
     {
@@ -33,16 +33,16 @@ namespace AutoLike.Transactions
             this.userRepository = userRepository;
         }
 
-        public Task TranferFromUserAsync(UserBase user, decimal amount, ITransactionInformation info, IClientSessionHandle session)
+        public Task TranferFromUserAsync(UserBase user, decimal amount, ITransactionInformation info, TransactionType TransactionType, IClientSessionHandle session)
         {
             EnsureAmountGreaterZero(amount, session);
-            return TranferAsync(user, -amount, info, session);
+            return TranferAsync(user, -amount, info, TransactionType, session);
         }
 
-        public Task TranferToUserAsync(UserBase user, decimal amount, ITransactionInformation info, IClientSessionHandle session)
+        public Task TranferToUserAsync(UserBase user, decimal amount, ITransactionInformation info, TransactionType TransactionType, IClientSessionHandle session)
         {
             EnsureAmountGreaterZero(amount, session);
-            return TranferAsync(user, amount, info, session);
+            return TranferAsync(user, amount, info, TransactionType, session);
         }
 
         void EnsureAmountGreaterZero(decimal amount, IClientSessionHandle session)
@@ -54,7 +54,7 @@ namespace AutoLike.Transactions
             }
         }
 
-        public async Task TranferAsync(UserBase u, decimal amount, ITransactionInformation info, IClientSessionHandle session)
+        public async Task TranferAsync(UserBase u, decimal amount, ITransactionInformation info, TransactionType TransactionType, IClientSessionHandle session)
         {
 
             //make transaction
@@ -62,7 +62,8 @@ namespace AutoLike.Transactions
             {
                 User = u,
                 Value = amount,
-                Information = info
+                Information = info,
+                TransactionType = TransactionType
             });
 
             if (trans == null)

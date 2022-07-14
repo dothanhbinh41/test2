@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp;
+using Volo.Abp.BackgroundJobs;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Identity;
 
@@ -16,6 +17,9 @@ namespace AutoLike.Orders
 {
     public class OrdersAppService : AutoLikeAppService, IOrdersAppService
     {
+        public const double CancelTime = 15;//mins
+
+        private readonly IBackgroundJobManager backgroundJobManager;
         private readonly IMongoClient mongoClient;
         private readonly ITransactionService transactionService;
         private readonly IRepository<Order, Guid> orderRepository;
@@ -24,6 +28,7 @@ namespace AutoLike.Orders
         private readonly IRepository<IdentityUser, Guid> userRepository;
 
         public OrdersAppService(
+            IBackgroundJobManager backgroundJobManager,
             IMongoClient mongoClient,
             ITransactionService transactionService,
             IRepository<Order, Guid> orderRepository,
@@ -31,6 +36,7 @@ namespace AutoLike.Orders
             IRepository<Service, Guid> serviceRepository,
             IRepository<IdentityUser, Guid> userRepository)
         {
+            this.backgroundJobManager = backgroundJobManager;
             this.mongoClient = mongoClient;
             this.transactionService = transactionService;
             this.orderRepository = orderRepository;
@@ -38,6 +44,7 @@ namespace AutoLike.Orders
             this.serviceRepository = serviceRepository;
             this.userRepository = userRepository;
         }
+
         public async Task<OrderDto> CancelAsync(Guid id)
         {
             var order = await orderRepository.GetAsync(id);
@@ -45,15 +52,19 @@ namespace AutoLike.Orders
             {
                 throw new UserFriendlyException("");
             }
-            using (var session = mongoClient.StartSession())
+
+            order.Status = OrderStatus.Pending;
+            var updated = await orderRepository.UpdateAsync(order);
+            if (updated == null)
             {
-                order.Status = OrderStatus.Pending;
-                await orderRepository.UpdateAsync(order);
-
-
-
-                return ObjectMapper.Map<Order, OrderDto>(order);
+                throw new UserFriendlyException("");
             }
+            var jobId = await backgroundJobManager.EnqueueAsync(
+                new CancelOrderArgs { OrderId = order.Id },
+                BackgroundJobPriority.High,
+                TimeSpan.FromMinutes(CancelTime));
+            return ObjectMapper.Map<Order, OrderDto>(order);
+
         }
 
         public async Task<OrderDto> CreateAsync(CreateOrderDto request)
@@ -86,7 +97,7 @@ namespace AutoLike.Orders
                     throw new UserFriendlyException("");
                 }
 
-                await transactionService.TranferFromUserAsync(CurrentUser.ToBase(), request.Quantity, orderResult, session);
+                await transactionService.TranferFromUserAsync(CurrentUser.ToBase(), request.Quantity, orderResult, TransactionType.Service, session);
                 session.CommitTransaction();
                 return ObjectMapper.Map<Order, OrderDto>(orderResult);
             }

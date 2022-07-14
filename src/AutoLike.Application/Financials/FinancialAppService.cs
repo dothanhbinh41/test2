@@ -58,7 +58,7 @@ namespace AutoLike.Financials
                     session.AbortTransaction();
                     throw new UserFriendlyException("");
                 }
-                await transactionService.TranferToUserAsync(fin.User, fin.Amount, fin,session); 
+                await transactionService.TranferToUserAsync(fin.User, fin.Amount, fin, TransactionType.Deposit, session);
                 session.CommitTransaction();
                 return ObjectMapper.Map<Financial, FinancialDto>(fin);
             }

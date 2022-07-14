@@ -12,7 +12,7 @@ namespace AutoLike.Services
         public string Name { get; set; }
         public string Code => $"{Group.ToString().ToLower()}_{Name?.ToLower()?.Replace("\\s", "")}";
         public ServiceGroup Group { get; set; }
-        public double Price { get; set; }
+        public decimal Price { get; set; }
         public Warranty[] Warranties { set; get; } 
         public Speed[] Speeds { get; set; }
         public uint MinQuantity { get; set; }

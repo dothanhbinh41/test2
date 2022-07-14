@@ -9,7 +9,7 @@ namespace AutoLike.Services
     {
         public WarrantyTimeUnit TimeUnit { get; set; }
         public int Time { get; set; }
-        public double Price { get; set; }
+        public decimal Price { get; set; }
         public TypeValue TypeValue { get; set; }
     }
     public enum WarrantyTimeUnit
