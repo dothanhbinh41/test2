@@ -16,7 +16,16 @@ namespace AutoLike.Services
         {
             return TimeUnit == other.TimeUnit && Time == other.Time && Price == other.Price && TypeValue == other.TypeValue;
         }
+
+        public static Warranty[] CreateDefaultWarranties(decimal oneWeek, decimal oneMonth, decimal threeMonths, decimal oneYear) => new Warranty[]
+        {
+            new Warranty{ TimeUnit = WarrantyTimeUnit.Week, Time = 1, Price = oneWeek },
+            new Warranty{ TimeUnit = WarrantyTimeUnit.Month, Time = 1, Price = oneMonth },
+            new Warranty{ TimeUnit = WarrantyTimeUnit.Month, Time = 3, Price = threeMonths },
+            new Warranty{ TimeUnit = WarrantyTimeUnit.Year, Time = 1, Price = oneYear },
+        };
     }
+
     public enum WarrantyTimeUnit
     {
         Day, Week, Month, Year

@@ -15,9 +15,18 @@ namespace AutoLike.Services
         {
             return Type == other.Type && Price == other.Price && TypeValue == other.TypeValue;
         }
+
+        public static Speed[] CreateDefaultSpeeds(decimal low, decimal medium, decimal normal, decimal high) => new Speed[]
+        {
+            new Speed{ Type = SpeedType.Low, Price = low},
+            new Speed{ Type = SpeedType.Medium, Price = medium },
+            new Speed{ Type = SpeedType.Normal, Price = normal },
+            new Speed{ Type = SpeedType.High, Price = high },
+        };
     }
+
     public enum SpeedType
     {
-        Low, Medium, High
-    }
+        Low, Medium, Normal, High
+    } 
 }
