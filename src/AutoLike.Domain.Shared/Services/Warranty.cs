@@ -5,7 +5,7 @@ using System.Text;
 
 namespace AutoLike.Services
 {
-    public struct Warranty : IEquatable<Warranty>
+    public struct Warranty : IEquatable<Warranty> 
     {
         public WarrantyTimeUnit TimeUnit { get; set; }
         public int Time { get; set; }
@@ -24,6 +24,26 @@ namespace AutoLike.Services
             new Warranty{ TimeUnit = WarrantyTimeUnit.Month, Time = 3, Price = threeMonths },
             new Warranty{ TimeUnit = WarrantyTimeUnit.Year, Time = 1, Price = oneYear },
         };
+
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public static bool operator ==(Warranty c1, Warranty c2)
+        {
+            return c1.Equals(c2);
+        }
+
+        public static bool operator !=(Warranty c1, Warranty c2)
+        {
+            return !c1.Equals(c2);
+        }
     }
 
     public enum WarrantyTimeUnit

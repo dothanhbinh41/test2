@@ -74,9 +74,8 @@ namespace AutoLike.Orders
             {
                 throw new UserFriendlyException("");
             }
-
-            var speedAvailable = service.Speeds.Any(c => c.Equals(request.Speed));
-            var warrantyAvailable = service.Warranties.Any(c => c.Equals(request.Warranty));
+            var speedAvailable = service.Speeds.Any(c => c == request.Speed);
+            var warrantyAvailable = service.Warranties.Any(c => c == request.Warranty);
             if (!speedAvailable || !warrantyAvailable)
             {
                 throw new UserFriendlyException("");
