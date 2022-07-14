@@ -24,6 +24,7 @@ namespace AutoLike.Financials
         private readonly IRepository<Financial, Guid> financialRepository;
         private readonly IRepository<Transaction, Guid> transactionRepository;
         private readonly IRepository<IdentityUser, Guid> userRepository;
+        private readonly ITransactionService transactionService;
         private readonly IMongoClient mongoClient;
 
         public FinancialAppService(
@@ -31,13 +32,14 @@ namespace AutoLike.Financials
             IRepository<Financial, Guid> financialRepository,
             IRepository<Transaction, Guid> transactionRepository,
             IRepository<IdentityUser, Guid> userRepository,
-
+            ITransactionService transactionService,
             IMongoClient mongoClient)
         {
             this.promotionRepository = promotionRepository;
             this.financialRepository = financialRepository;
             this.transactionRepository = transactionRepository;
             this.userRepository = userRepository;
+            this.transactionService = transactionService;
             this.mongoClient = mongoClient;
         }
 
@@ -56,28 +58,7 @@ namespace AutoLike.Financials
                     session.AbortTransaction();
                     throw new UserFriendlyException("");
                 }
-
-                var trans = await transactionRepository.InsertAsync(new Transaction
-                {
-                    User = fin.User,
-                    Value = fin.Amount,
-                    Information = fin
-                });
-
-                if (trans == null)
-                {
-                    session.AbortTransaction();
-                    throw new UserFriendlyException("");
-                }
-
-                var user = await userRepository.FindAsync(d => d.Id == fin.User.Id);
-                if (user == null)
-                {
-                    session.AbortTransaction();
-                    throw new UserFriendlyException("");
-                }
-                user.SetBalance(fin.Amount + user.GetBalance());
-                var updated = await userRepository.UpdateAsync(user);
+                await transactionService.TranferToUserAsync(fin.User, fin.Amount, fin,session); 
                 session.CommitTransaction();
                 return ObjectMapper.Map<Financial, FinancialDto>(fin);
             }

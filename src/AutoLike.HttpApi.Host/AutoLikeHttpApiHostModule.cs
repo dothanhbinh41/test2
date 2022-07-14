@@ -26,7 +26,8 @@ using Volo.Abp.Localization;
 using Volo.Abp.Modularity;
 using Volo.Abp.Swashbuckle;
 using Volo.Abp.VirtualFileSystem;
-
+using Volo.Abp.BackgroundJobs.Hangfire;
+using Hangfire; 
 namespace AutoLike;
 
 [DependsOn(
@@ -37,7 +38,8 @@ namespace AutoLike;
     typeof(AutoLikeApplicationModule),
     typeof(AutoLikeMongoDbModule),
     typeof(AbpAspNetCoreSerilogModule),
-    typeof(AbpSwashbuckleModule)
+    typeof(AbpSwashbuckleModule), 
+    typeof(AbpBackgroundJobsHangfireModule)
 )]
 public class AutoLikeHttpApiHostModule : AbpModule
 {
@@ -54,11 +56,20 @@ public class AutoLikeHttpApiHostModule : AbpModule
         ConfigureDataProtection(context, configuration, hostingEnvironment);
         ConfigureCors(context, configuration);
         ConfigureSwaggerServices(context, configuration);
+        ConfigureHangfire(context);
     }
 
     private void ConfigureCache(IConfiguration configuration)
     {
         Configure<AbpDistributedCacheOptions>(options => { options.KeyPrefix = "AutoLike:"; });
+    }
+
+    private void ConfigureHangfire(ServiceConfigurationContext context)
+    { 
+        context.Services.AddHangfire(config =>
+        {
+            config.UseInMemoryStorage();
+        });
     }
 
     private void ConfigureVirtualFileSystem(ServiceConfigurationContext context)

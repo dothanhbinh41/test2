@@ -79,15 +79,7 @@ namespace AutoLike.Gifts
                 Code = giftCode.Code,
                 Value = giftCode.Value,
                 GiftCodeId = giftCode.Id,
-                User = new UserBase
-                {
-                    Id = CurrentUser.Id.Value,
-                    Email = CurrentUser.Email,
-                    UserName = CurrentUser.UserName,
-                    PhoneNumber = CurrentUser.PhoneNumber,
-                    Name = CurrentUser.Name,
-                    SurName = CurrentUser.SurName
-                }
+                User = CurrentUser.ToBase()
             });
 
             return ObjectMapper.Map<UserGiftCode, UserGiftCodeDto>(result);
