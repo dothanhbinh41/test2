@@ -11,5 +11,6 @@ namespace AutoLike.Orders
     {
         Task<OrderDto> CreateAsync(CreateOrderDto order);
         Task<OrderDto> CancelAsync(Guid id);
+        Task<OrderDto> ProcessOrderAsync(CreateOrderProcessDto request);
     }
 }

@@ -25,6 +25,7 @@ namespace AutoLike.Orders
         private readonly IBackgroundJobManager backgroundJobManager;
         private readonly IMongoClient mongoClient;
         private readonly ITransactionService transactionService;
+        private readonly IRepository<OrderProcess, Guid> orderProcessRepository;
         private readonly IRepository<Order, Guid> orderRepository;
         private readonly IRepository<Transaction, Guid> transactionRepository;
         private readonly IRepository<Service, Guid> serviceRepository;
@@ -36,6 +37,7 @@ namespace AutoLike.Orders
             IBackgroundJobManager backgroundJobManager,
             IMongoClient mongoClient,
             ITransactionService transactionService,
+            IRepository<OrderProcess, Guid> orderProcessRepository,
             IRepository<Order, Guid> orderRepository,
             IRepository<Transaction, Guid> transactionRepository,
             IRepository<Service, Guid> serviceRepository,
@@ -46,6 +48,7 @@ namespace AutoLike.Orders
             this.backgroundJobManager = backgroundJobManager;
             this.mongoClient = mongoClient;
             this.transactionService = transactionService;
+            this.orderProcessRepository = orderProcessRepository;
             this.orderRepository = orderRepository;
             this.transactionRepository = transactionRepository;
             this.serviceRepository = serviceRepository;
@@ -94,9 +97,9 @@ namespace AutoLike.Orders
                 throw new UserFriendlyException("");
             }
 
-            
+
             var order = new Order
-            {   
+            {
                 User = CurrentUser.ToBase(),
                 Status = OrderStatus.Active,
                 Quantity = request.Quantity,
@@ -121,6 +124,47 @@ namespace AutoLike.Orders
                 await transactionService.TranferFromUserAsync(CurrentUser.ToBase(), request.Quantity, orderResult, TransactionType.Service, session);
                 session.CommitTransaction();
                 return ObjectMapper.Map<Order, OrderDto>(orderResult);
+            }
+        }
+
+        public async Task<OrderDto> ProcessOrderAsync(CreateOrderProcessDto request)
+        {
+            var order = await orderRepository.GetAsync(request.OrderId);
+            if (order == null)
+            {
+                throw new UserFriendlyException("");
+            }
+            using (var session = mongoClient.StartSession())
+            {
+                session.StartTransaction();
+                var process = await orderProcessRepository.InsertAsync(new OrderProcess { OrderId = request.OrderId, Quantity = request.Quantity });
+                if (process == null)
+                {
+                    session.AbortTransaction();
+                    throw new UserFriendlyException("");
+                }
+                order.CompletedQuantity += process.Quantity;
+                if (order.CompletedQuantity >= order.Quantity)
+                {
+                    order.Status = OrderStatus.Complete;
+                }
+                if (order.Processes == null)
+                {
+                    order.Processes = new OrderProcess[] { process };
+                }
+                else
+                {
+                    order.Processes.Add(process);
+                }
+
+                var update = await orderRepository.UpdateAsync(order);
+                if (update == null)
+                {
+                    session.AbortTransaction();
+                    throw new UserFriendlyException("");
+                }
+                session.CommitTransaction();
+                return ObjectMapper.Map<Order, OrderDto>(update);
             }
         }
     }

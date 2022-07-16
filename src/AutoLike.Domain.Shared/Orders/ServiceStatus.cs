@@ -9,6 +9,7 @@ namespace AutoLike.Orders
         Active,  // Đang làm việc, hoạt đông
         InActive,  // Đã nghỉ, ngưng hoạt động
         Pending,  // Chờ xử lý
+        Complete,
         Delete // Đã xóa
     }
 }
