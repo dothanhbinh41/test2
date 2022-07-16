@@ -45,6 +45,13 @@ namespace AutoLike.Gifts
             await base.DeleteAsync(id);
         }
 
+        public async Task<UserGiftCodeDto[]> GetUserGiftCodesAsync()
+        {
+            var query = await userGiftCodeRepository.GetMongoQueryableAsync();
+            var result = query.Where(d => d.User.Id == CurrentUser.Id.Value).ToArray();
+            return ObjectMapper.Map<UserGiftCode[], UserGiftCodeDto[]>(result);
+        }
+
         [Authorize(AutoLikePermissions.UpdateGiftCodePermission)]
         public override Task<GiftCodeDto> UpdateAsync(Guid id, UpdateGiftCodeDto input)
         {
@@ -69,6 +76,40 @@ namespace AutoLike.Gifts
 
             //check gift code used
             var count = await userGiftCodeRepository.CountAsync(d => d.GiftCodeId == id);
+            if (giftCode.Count <= count)
+            {
+                throw new UserFriendlyException("");
+            }
+
+            var result = await userGiftCodeRepository.InsertAsync(new UserGiftCode
+            {
+                Code = giftCode.Code,
+                Value = giftCode.Value,
+                GiftCodeId = giftCode.Id,
+                User = CurrentUser.ToBase()
+            });
+
+            return ObjectMapper.Map<UserGiftCode, UserGiftCodeDto>(result);
+        }
+
+        public async Task<UserGiftCodeDto> UseGiftCodeAsync(string code)
+        {
+            var giftCode = await Repository.FindAsync(d=>d.Code.Equals(code));
+
+            //check exist gift code
+            if (giftCode == null)
+            {
+                throw new UserFriendlyException("");
+            }
+
+            //check expire time
+            if (giftCode.ExpireTime.ToUniversalTime().Subtract(DateTime.UtcNow) < TimeSpan.Zero)
+            {
+                throw new UserFriendlyException("");
+            }
+
+            //check gift code used
+            var count = await userGiftCodeRepository.CountAsync(d => d.GiftCodeId == giftCode.Id);
             if (giftCode.Count <= count)
             {
                 throw new UserFriendlyException("");

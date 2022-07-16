@@ -11,6 +11,6 @@ namespace AutoLike.Gifts.Dtos
         public string GiftCodeId { get; set; }
         public string Code { get; set; }
         public decimal Value { get; set; }
-        public UserBaseDto User { set; get; }
+        public UserBaseDto User { set; get; } 
     }
 }
