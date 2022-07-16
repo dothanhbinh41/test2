@@ -10,7 +10,7 @@ namespace AutoLike.Orders.Dtos
     public class CreateOrderDto
     {
         [Required]
-        public string UId { get; set; }
+        public string Uid { get; set; }
 
         public Warranty Warranty { set; get; }
         public Speed Speed { set; get; }

@@ -39,7 +39,7 @@ namespace AutoLike.Orders
                 throw new UserFriendlyException("");
             }
             var completeValue = await CalculateCompleteValue(args.OrderId);
-            var refund = order.Price - completeValue * (order.Info.Price + order.Info.Speed.Price + order.Info.Warranty.Price);
+            var refund = order.Price - completeValue * (order.Speed.Price + order.Warranty.Price);
             if (refund <= 0)
             {
                 return;

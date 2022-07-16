@@ -1,7 +1,9 @@
-﻿using AutoLike.Orders.Dtos;
+﻿using AutoLike.Generators;
+using AutoLike.Orders.Dtos;
 using AutoLike.Services;
 using AutoLike.Transactions;
 using AutoLike.Users;
+using AutoLike.Validators;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -18,7 +20,8 @@ namespace AutoLike.Orders
     public class OrdersAppService : AutoLikeAppService, IOrdersAppService
     {
         public const double CancelTime = 15;//mins
-
+        private readonly IUidValidator uidValidator;
+        private readonly ICodeGenerator codeGenerator;
         private readonly IBackgroundJobManager backgroundJobManager;
         private readonly IMongoClient mongoClient;
         private readonly ITransactionService transactionService;
@@ -28,6 +31,8 @@ namespace AutoLike.Orders
         private readonly IRepository<IdentityUser, Guid> userRepository;
 
         public OrdersAppService(
+            IUidValidator uidValidator,
+            ICodeGenerator codeGenerator,
             IBackgroundJobManager backgroundJobManager,
             IMongoClient mongoClient,
             ITransactionService transactionService,
@@ -36,6 +41,8 @@ namespace AutoLike.Orders
             IRepository<Service, Guid> serviceRepository,
             IRepository<IdentityUser, Guid> userRepository)
         {
+            this.uidValidator = uidValidator;
+            this.codeGenerator = codeGenerator;
             this.backgroundJobManager = backgroundJobManager;
             this.mongoClient = mongoClient;
             this.transactionService = transactionService;
@@ -80,19 +87,27 @@ namespace AutoLike.Orders
             {
                 throw new UserFriendlyException("");
             }
-            var order = new Order
+
+            var uuid = await uidValidator.GetUidAsync(service.Group, request.Uid);
+            if (string.IsNullOrEmpty(uuid))
             {
+                throw new UserFriendlyException("");
+            }
+
+            
+            var order = new Order
+            {   
                 User = CurrentUser.ToBase(),
                 Status = OrderStatus.Active,
                 Quantity = request.Quantity,
-                Info = new OrderInformation
-                {
-                    Warranty = request.Warranty,
-                    Speed = request.Speed
-                },
-                Price = request.Quantity * (request.Speed.Price + request.Warranty.Price)
+                Warranty = request.Warranty,
+                Speed = request.Speed,
+                Uid = uuid,
+                RequestUid = request.Uid,
+                Price = request.Quantity * (request.Speed.Price + request.Warranty.Price),
+                Service = service
             };
-
+            order.Code = codeGenerator.Generate(order.Id);
             using (var session = mongoClient.StartSession())
             {
                 session.StartTransaction();

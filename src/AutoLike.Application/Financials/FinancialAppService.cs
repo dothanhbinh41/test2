@@ -1,4 +1,5 @@
 ﻿using AutoLike.Financials.Dtos;
+using AutoLike.Generators;
 using AutoLike.Permissions;
 using AutoLike.Promotions;
 using AutoLike.Transactions;
@@ -25,6 +26,7 @@ namespace AutoLike.Financials
         private readonly IRepository<Transaction, Guid> transactionRepository;
         private readonly IRepository<IdentityUser, Guid> userRepository;
         private readonly ITransactionService transactionService;
+        private readonly ICodeGenerator codeGenerator;
         private readonly IMongoClient mongoClient;
 
         public FinancialAppService(
@@ -33,6 +35,7 @@ namespace AutoLike.Financials
             IRepository<Transaction, Guid> transactionRepository,
             IRepository<IdentityUser, Guid> userRepository,
             ITransactionService transactionService,
+            ICodeGenerator codeGenerator,
             IMongoClient mongoClient)
         {
             this.promotionRepository = promotionRepository;
@@ -40,6 +43,7 @@ namespace AutoLike.Financials
             this.transactionRepository = transactionRepository;
             this.userRepository = userRepository;
             this.transactionService = transactionService;
+            this.codeGenerator = codeGenerator;
             this.mongoClient = mongoClient;
         }
 
@@ -78,6 +82,7 @@ namespace AutoLike.Financials
             {
                 fin.Promotion = promotion;
             }
+            fin.Code = codeGenerator.Generate(fin.Id);
             var obj = await financialRepository.InsertAsync(fin);
             return ObjectMapper.Map<Financial, FinancialDto>(obj);
         }

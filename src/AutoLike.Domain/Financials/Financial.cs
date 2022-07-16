@@ -12,15 +12,12 @@ using Volo.Abp.Domain.Entities.Auditing;
 namespace AutoLike.Financials
 {
     public class Financial : FullAuditedAggregateRoot<Guid>, ITransactionInformation
-    { 
+    {
+        public string Code { get; set; }
         public UserBase User { get; set; }
         public decimal Amount { get; set; }
         public FinancialStatus Status { get; set; }
-        //public FinancialUnit Unit { get; set; }
-        public string AccountName { get; set; }
-        public string BankName { get; set; }
-        public string BankNumber { get; set; }
-        public string ResonanceCode { get; set; }
+        //public FinancialUnit Unit { get; set; } 
         public Promotion Promotion { get; set; }
     }
 }
