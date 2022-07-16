@@ -16,6 +16,7 @@ namespace AutoLike.Financials
         public string Code { get; set; }
         public UserBase User { get; set; }
         public decimal Amount { get; set; }
+        public decimal Bonus { get; set; }
         public FinancialStatus Status { get; set; }
         //public FinancialUnit Unit { get; set; } 
         public Promotion Promotion { get; set; }

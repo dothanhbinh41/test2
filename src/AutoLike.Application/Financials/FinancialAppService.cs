@@ -62,7 +62,8 @@ namespace AutoLike.Financials
                     session.AbortTransaction();
                     throw new UserFriendlyException("");
                 }
-                await transactionService.TranferToUserAsync(fin.User, fin.Amount, fin, TransactionType.Deposit, session);
+                 
+                await transactionService.TranferToUserAsync(fin.User, fin.Amount + CalculateBonus(fin), fin, TransactionType.Deposit, session);
                 session.CommitTransaction();
                 return ObjectMapper.Map<Financial, FinancialDto>(fin);
             }
@@ -82,11 +83,21 @@ namespace AutoLike.Financials
             {
                 fin.Promotion = promotion;
             }
+            fin.Bonus = CalculateBonus(fin);
             fin.Code = codeGenerator.Generate(fin.Id);
             var obj = await financialRepository.InsertAsync(fin);
             return ObjectMapper.Map<Financial, FinancialDto>(obj);
         }
 
+        decimal CalculateBonus(Financial fin)
+        {
+            decimal bonus = 0;
+            if (fin == null || fin.Promotion != null)
+            {
+                bonus = fin.Promotion.TypeValue == TypeValue.Absolute ? fin.Promotion.Value : fin.Promotion.Value * fin.Amount;
+            }
+            return bonus;
+        }
 
         [Authorize(AutoLikePermissions.SearchFinancialPermission)]
         public async Task<PagedResultDto<FinancialDto>> GetAllFinancialsAsync(FilterFinancialRequestDto request)
