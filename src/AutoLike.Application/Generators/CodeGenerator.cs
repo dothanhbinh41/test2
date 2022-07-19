@@ -1,5 +1,4 @@
-﻿using Force.Crc32;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,10 +9,8 @@ namespace AutoLike.Generators
     public class CodeGenerator : ICodeGenerator
     {
         public string Generate(Guid uid)
-        {
-            var c = new Crc32Algorithm();
-            var crc1 = c.ComputeHash(uid.ToByteArray());
-            return BitConverter.ToString(crc1).Replace("-", "");
+        { 
+            return uid.ToString().Split('-').Last();
         }
 
         public string Generate(string code, int number)
