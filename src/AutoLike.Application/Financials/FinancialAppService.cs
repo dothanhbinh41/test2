@@ -62,7 +62,7 @@ namespace AutoLike.Financials
                     session.AbortTransaction();
                     throw new UserFriendlyException("");
                 }
-                 
+
                 await transactionService.TranferToUserAsync(fin.User, fin.Amount + CalculateBonus(fin), fin, TransactionType.Deposit, session);
                 session.CommitTransaction();
                 return ObjectMapper.Map<Financial, FinancialDto>(fin);
@@ -84,7 +84,7 @@ namespace AutoLike.Financials
                 fin.Promotion = promotion;
             }
             fin.Bonus = CalculateBonus(fin);
-            fin.Code = codeGenerator.Generate(fin.Id);
+            fin.Code = codeGenerator.Generate(fin.Id, GenerateCode.Financial);
             var obj = await financialRepository.InsertAsync(fin);
             return ObjectMapper.Map<Financial, FinancialDto>(obj);
         }

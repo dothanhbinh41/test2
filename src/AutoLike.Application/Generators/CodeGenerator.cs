@@ -6,8 +6,12 @@ using System.Threading.Tasks;
 
 namespace AutoLike.Generators
 {
+
     public class CodeGenerator : ICodeGenerator
     {
+        public const string PrefixFinancial = "Fi";
+        public const string PrefixOrder = "Or";
+
         public string Generate(Guid uid)
         { 
             return uid.ToString().Split('-').Last();
@@ -17,6 +21,18 @@ namespace AutoLike.Generators
         {
             var cache = new Dictionary<int, string>();
             return Generate(number, cache);
+        }
+
+        public string Generate(Guid uid, GenerateCode type)
+        {
+            switch (type)
+            {
+                case GenerateCode.Financial:
+                    return $"{PrefixFinancial}{Generate(uid)}";
+                    case GenerateCode.Order:
+                default: 
+                    return $"{PrefixOrder}{Generate(uid)}";
+            }
         }
 
         string Generate(int num, Dictionary<int, string> cache)

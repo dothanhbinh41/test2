@@ -110,7 +110,7 @@ namespace AutoLike.Orders
                 Price = request.Quantity * (request.Speed.Price + request.Warranty.Price),
                 Service = service
             };
-            order.Code = codeGenerator.Generate(order.Id);
+            order.Code = codeGenerator.Generate(order.Id, GenerateCode.Order);
             using (var session = mongoClient.StartSession())
             {
                 session.StartTransaction();
