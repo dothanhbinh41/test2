@@ -153,7 +153,7 @@ public class IdentityServerDataSeedContributor : IDataSeedContributor, ITransien
                 name: consoleAndAngularClientId,
                 clientUri: webClientRootUrl,
                 scopes: commonScopes,
-                grantTypes: new[] { "password", "client_credentials", "authorization_code" },
+                grantTypes: new[] { "password", "client_credentials", "authorization_code","qrcode" },
                 secret: (configurationSection["AutoLike_App:ClientSecret"] ?? "1q2w3e*").Sha256(),
                 requireClientSecret: false,
                 redirectUri: webClientRootUrl,

@@ -10,7 +10,7 @@ using Microsoft.Extensions.Hosting;
 using AutoLike.MongoDB;
 using AutoLike.Localization;
 using AutoLike.MultiTenancy;
-using StackExchange.Redis;
+//using StackExchange.Redis;
 using Volo.Abp;
 using Volo.Abp.Account;
 using Volo.Abp.Account.Web;
@@ -31,12 +31,13 @@ using Volo.Abp.Modularity;
 using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.UI;
 using Volo.Abp.VirtualFileSystem;
+using IdentityServer4.Configuration;
+using AutoLike.Users;
 
 namespace AutoLike;
-
 [DependsOn(
     typeof(AbpAutofacModule),
-    typeof(AbpCachingStackExchangeRedisModule),
+    //typeof(AbpCachingStackExchangeRedisModule),
     typeof(AbpAccountWebIdentityServerModule),
     typeof(AbpAccountApplicationModule),
     typeof(AbpAccountHttpApiModule),
@@ -46,10 +47,21 @@ namespace AutoLike;
     )]
 public class AutoLikeIdentityServerModule : AbpModule
 {
+    public override void PreConfigureServices(ServiceConfigurationContext context)
+    {
+        base.PreConfigureServices(context);
+        PreConfigure<IIdentityServerBuilder>(d =>
+        {
+            d.AddExtensionGrantValidator<QRCodeGrantValidator>();
+        });
+    }
+
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         var hostingEnvironment = context.Services.GetHostingEnvironment();
         var configuration = context.Services.GetConfiguration();
+
+ 
 
         Configure<AbpLocalizationOptions>(options =>
         {
@@ -128,8 +140,8 @@ public class AutoLikeIdentityServerModule : AbpModule
         var dataProtectionBuilder = context.Services.AddDataProtection().SetApplicationName("AutoLike");
         if (!hostingEnvironment.IsDevelopment())
         {
-            var redis = ConnectionMultiplexer.Connect(configuration["Redis:Configuration"]);
-            dataProtectionBuilder.PersistKeysToStackExchangeRedis(redis, "AutoLike-Protection-Keys");
+            //var redis = ConnectionMultiplexer.Connect(configuration["Redis:Configuration"]);
+            //dataProtectionBuilder.PersistKeysToStackExchangeRedis(redis, "AutoLike-Protection-Keys");
         }
 
         context.Services.AddCors(options =>
@@ -149,7 +161,7 @@ public class AutoLikeIdentityServerModule : AbpModule
                     .AllowAnyMethod()
                     .AllowCredentials();
             });
-        });
+        }); 
     }
 
     public override void OnApplicationInitialization(ApplicationInitializationContext context)
