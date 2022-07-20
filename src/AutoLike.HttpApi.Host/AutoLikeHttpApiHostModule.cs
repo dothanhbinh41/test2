@@ -27,13 +27,15 @@ using Volo.Abp.Modularity;
 using Volo.Abp.Swashbuckle;
 using Volo.Abp.VirtualFileSystem;
 using Volo.Abp.BackgroundJobs.Hangfire;
-using Hangfire; 
-namespace AutoLike;
+using Hangfire;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Volo.Abp.Account;
 
+namespace AutoLike;
 [DependsOn(
-    typeof(AutoLikeHttpApiModule),
-    typeof(AbpAutofacModule),
-    typeof(AbpCachingStackExchangeRedisModule),
+typeof(AutoLikeHttpApiModule),
+typeof(AbpAutofacModule),
+//typeof(AbpCachingStackExchangeRedisModule),
     typeof(AbpAspNetCoreMvcUiMultiTenancyModule),
     typeof(AutoLikeApplicationModule),
     typeof(AutoLikeMongoDbModule),
@@ -56,7 +58,7 @@ public class AutoLikeHttpApiHostModule : AbpModule
         ConfigureDataProtection(context, configuration, hostingEnvironment);
         ConfigureCors(context, configuration);
         ConfigureSwaggerServices(context, configuration);
-        ConfigureHangfire(context);
+        ConfigureHangfire(context); 
     }
 
     private void ConfigureCache(IConfiguration configuration)
@@ -165,8 +167,8 @@ public class AutoLikeHttpApiHostModule : AbpModule
         var dataProtectionBuilder = context.Services.AddDataProtection().SetApplicationName("AutoLike");
         if (!hostingEnvironment.IsDevelopment())
         {
-            var redis = ConnectionMultiplexer.Connect(configuration["Redis:Configuration"]);
-            dataProtectionBuilder.PersistKeysToStackExchangeRedis(redis, "AutoLike-Protection-Keys");
+            //var redis = ConnectionMultiplexer.Connect(configuration["Redis:Configuration"]);
+            //dataProtectionBuilder.PersistKeysToStackExchangeRedis(redis, "AutoLike-Protection-Keys");
         }
     }
 

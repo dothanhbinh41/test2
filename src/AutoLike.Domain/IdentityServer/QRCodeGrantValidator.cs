@@ -1,5 +1,6 @@
 ﻿
 
+using AutoLike.IdentityServer;
 using IdentityModel;
 using IdentityServer4.Events;
 using IdentityServer4.Models;
@@ -7,28 +8,32 @@ using IdentityServer4.Services;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Identity;
 
 namespace AutoLike.Users
 {
-    public class TokenExchangeGrantValidator : IExtensionGrantValidator
+    public class QRCodeGrantValidator : IExtensionGrantValidator
     {
+        readonly IRepository<QRCode> qrCodeRepository;
+        readonly UserManager<Volo.Abp.Identity.IdentityUser> _userManager;
+        readonly IEventService _events;
 
-        protected readonly UserManager<Volo.Abp.Identity.IdentityUser> _userManager;
-        private readonly IEventService _events;
-
-        public TokenExchangeGrantValidator(
-            ITokenValidator validator,
-            IHttpContextAccessor httpContextAccessor,
-            UserManager<Volo.Abp.Identity.IdentityUser> userManager
-            , IEventService events)
+        public QRCodeGrantValidator(
+            //ITokenValidator validator, 
+            IRepository<QRCode, Guid> qrCodeRepository,
+            UserManager<Volo.Abp.Identity.IdentityUser> userManager,
+            IEventService events)
         {
+            this.qrCodeRepository = qrCodeRepository;
             _userManager = userManager;
             _events = events;
         }
 
+        public string GrantType => "qrcode";
 
         public async Task ValidateAsync(ExtensionGrantValidationContext context)
         {
@@ -40,15 +45,19 @@ namespace AutoLike.Users
                 return;
             }
 
-            var user = await _userManager.FindByNameAsync(qrcode);
-            // or use this one, if you are sending userId
-            //var user = await _userManager.FindByIdAsync(userId);
+            var qrCode = await qrCodeRepository.GetAsync(d => d.Id == Guid.Parse(qrcode));
+            if (qrCode == null || !qrCode.CreatorId.HasValue || DateTime.UtcNow.Subtract(qrCode.ExpiredTime.ToUniversalTime()) > TimeSpan.Zero)
+            {
+                context.Result = new GrantValidationResult(TokenRequestErrors.InvalidGrant);
+                return;
+            }
+            var user = await _userManager.FindByIdAsync(qrCode.CreatorId.Value.ToString());
             if (null == user)
             {
                 context.Result = new GrantValidationResult(TokenRequestErrors.InvalidGrant);
                 return;
             }
-
+            await qrCodeRepository.DeleteAsync(qrCode);
             await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id.ToString(), user.UserName, false, context.Request.ClientId));
             var customResponse = new Dictionary<string, object>
             {
@@ -59,7 +68,5 @@ namespace AutoLike.Users
                 authenticationMethod: GrantType,
                 customResponse: customResponse);
         }
-
-        public string GrantType => "qrcode";
     }
 }
