@@ -33,6 +33,9 @@ using Volo.Abp.UI;
 using Volo.Abp.VirtualFileSystem;
 using IdentityServer4.Configuration;
 using AutoLike.Users;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
+using System.Net;
 
 namespace AutoLike;
 [DependsOn(
@@ -60,8 +63,8 @@ public class AutoLikeIdentityServerModule : AbpModule
     {
         var hostingEnvironment = context.Services.GetHostingEnvironment();
         var configuration = context.Services.GetConfiguration();
+         
 
- 
 
         Configure<AbpLocalizationOptions>(options =>
         {
@@ -143,7 +146,7 @@ public class AutoLikeIdentityServerModule : AbpModule
             //var redis = ConnectionMultiplexer.Connect(configuration["Redis:Configuration"]);
             //dataProtectionBuilder.PersistKeysToStackExchangeRedis(redis, "AutoLike-Protection-Keys");
         }
-
+         
         context.Services.AddCors(options =>
         {
             options.AddDefaultPolicy(builder =>
@@ -161,7 +164,12 @@ public class AutoLikeIdentityServerModule : AbpModule
                     .AllowAnyMethod()
                     .AllowCredentials();
             });
-        }); 
+        });
+
+        context.Services.Configure<ForwardedHeadersOptions>(options =>
+        {
+            options.KnownProxies.Add(IPAddress.Parse("149.28.192.142"));
+        });
     }
 
     public override void OnApplicationInitialization(ApplicationInitializationContext context)
@@ -198,5 +206,10 @@ public class AutoLikeIdentityServerModule : AbpModule
         app.UseAuditing();
         app.UseAbpSerilogEnrichers();
         app.UseConfiguredEndpoints();
+
+        app.UseForwardedHeaders(new ForwardedHeadersOptions
+        {
+            ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+        });
     }
 }

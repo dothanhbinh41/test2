@@ -20,8 +20,7 @@ namespace AutoLike.Agencies
 		public string Title { get; set; } 
 		public string Address { get; set; } 
 		public string Contact { get; set; }  
-		public CommonStatus Status { get; set; }  
-		public string AppSecretKey { get; set; }  
-		public string[] WhiteListIP { get; set; } 
-    }
+		public CommonStatus Status { get; set; } 
+        public string[] WhiteListIP { get; set; } 
+    } 
 }

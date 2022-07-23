@@ -31,9 +31,9 @@ public class Program
             var builder = WebApplication.CreateBuilder(args);
             builder.Host.AddAppSettingsSecretsJson()
                 .UseAutofac()
-                .UseSerilog();
+                .UseSerilog(); 
             await builder.AddApplicationAsync<AutoLikeIdentityServerModule>();
-            var app = builder.Build();
+            var app = builder.Build(); 
             await app.InitializeApplicationAsync();
             await app.RunAsync();
             return 0;
