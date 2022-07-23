@@ -30,6 +30,7 @@ using Volo.Abp.BackgroundJobs.Hangfire;
 using Hangfire;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Volo.Abp.Account;
+using AutoLike.Options;
 
 namespace AutoLike;
 [DependsOn(
@@ -59,6 +60,12 @@ public class AutoLikeHttpApiHostModule : AbpModule
         ConfigureCors(context, configuration);
         ConfigureSwaggerServices(context, configuration);
         ConfigureHangfire(context); 
+        ConfigureOptions(context, configuration);  
+    }
+
+    private void ConfigureOptions(ServiceConfigurationContext context, IConfiguration configuration)
+    {
+        context.Services.Configure<AppSetting>(configuration.GetSection("Settings"));
     }
 
     private void ConfigureCache(IConfiguration configuration)

@@ -1,10 +1,12 @@
 ﻿using AutoLike.Financials.Dtos;
 using AutoLike.Generators;
+using AutoLike.Options;
 using AutoLike.Permissions;
 using AutoLike.Promotions;
 using AutoLike.Transactions;
 using AutoLike.Users;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -28,8 +30,9 @@ namespace AutoLike.Financials
         private readonly ITransactionService transactionService;
         private readonly ICodeGenerator codeGenerator;
         private readonly IMongoClient mongoClient;
-
+        private readonly AppSetting appSetting;
         public FinancialAppService(
+            IOptions<AppSetting> options,
             IRepository<Promotion, Guid> promotionRepository,
             IRepository<Financial, Guid> financialRepository,
             IRepository<Transaction, Guid> transactionRepository,
@@ -45,6 +48,7 @@ namespace AutoLike.Financials
             this.transactionService = transactionService;
             this.codeGenerator = codeGenerator;
             this.mongoClient = mongoClient;
+            this.appSetting = options.Value;
         }
 
         [Authorize(AutoLikePermissions.ConfirmFinancialPermission)]
@@ -75,9 +79,23 @@ namespace AutoLike.Financials
             {
                 throw new UserFriendlyException("");
             }
+            //check last request
+            var lastDeposit = (await financialRepository.GetQueryableAsync())
+                .OrderBy(d => d.CreationTime)
+                .LastOrDefault(d => d.CreatorId == CurrentUser.Id.Value);
+            if (lastDeposit != null && DateTime.UtcNow.Subtract(lastDeposit.CreationTime.ToUniversalTime()) < TimeSpan.FromMinutes(appSetting.TimeDeposit))
+            {
+                throw new UserFriendlyException("");
+            }
 
+            //check amount
+            if (request.Amount < appSetting.MinDepositAmount)
+            {
+                throw new UserFriendlyException("");
+            }
+
+            //find promotion
             var promotion = await promotionRepository.FindAsync(d => d.IsActived && request.Amount >= d.Begin && request.Amount <= d.End);
-
             var fin = ObjectMapper.Map<DepositRequestDto, Financial>(request);
             if (promotion != null)
             {
