@@ -11,14 +11,24 @@ using AutoLike.Services.Dtos;
 using Volo.Abp.Domain.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using AutoLike.Permissions;
+using Volo.Abp.Caching;
+using AutoLike.Caching;
 
 namespace AutoLike.Services
 {
     [Authorize]
     public class ServicesAppService : CrudAppService<Service, ServiceDto, Guid, PagedResultRequestDto, CreateServiceDto, UpdateServiceDto>, IServicesAppService
     {
-        public ServicesAppService(IRepository<Service, Guid> repository) : base(repository)
+        private readonly IDistributedCache<ServiceDto> serviceCache;
+        private readonly IDistributedCache<PagedResultDto<ServiceDto>> listServiceCache;
+
+        public ServicesAppService(
+            IRepository<Service, Guid> repository,
+            IDistributedCache<ServiceDto> serviceCache,
+            IDistributedCache<PagedResultDto<ServiceDto>> listServiceCache) : base(repository)
         {
+            this.serviceCache = serviceCache;
+            this.listServiceCache = listServiceCache;
         }
 
         [Authorize(AutoLikePermissions.CreateServicePermission)]
@@ -37,6 +47,23 @@ namespace AutoLike.Services
         public override Task<ServiceDto> UpdateAsync(Guid id, UpdateServiceDto input)
         {
             return base.UpdateAsync(id, input);
+        }
+
+        public override Task<ServiceDto> GetAsync(Guid id)
+        {
+            return serviceCache.GetOrAddAsync(
+                AutoLikeCaching.GetCache(id, AutoLikeCaching.ServiceCacheGroup), //get key
+                () => base.GetAsync(id), // factory
+                () => new Microsoft.Extensions.Caching.Distributed.DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = AutoLikeCaching.TimeExpried }); //option
+        }
+
+        public override Task<PagedResultDto<ServiceDto>> GetListAsync(PagedResultRequestDto input)
+        {
+            input.MaxResultCount = PagedResultRequestDto.MaxMaxResultCount;
+            return listServiceCache.GetOrAddAsync(
+                AutoLikeCaching.GetListCache(input.SkipCount, AutoLikeCaching.ServiceCacheGroup), //get key
+                () => base.GetListAsync(input), // factory
+                () => new Microsoft.Extensions.Caching.Distributed.DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = AutoLikeCaching.TimeExpried }); //option
         }
     }
 }
