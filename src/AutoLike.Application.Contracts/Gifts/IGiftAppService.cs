@@ -11,7 +11,7 @@ namespace AutoLike.Gifts
 {
     public interface IGiftAppService : ICrudAppService<GiftCodeDto, Guid, PagedResultRequestDto, CreateGiftCodeDto, UpdateGiftCodeDto>
     {
-        Task<UserGiftCodeDto> UseGiftCodeAsync(Guid id);
+        //Task<UserGiftCodeDto> UseGiftCodeAsync(Guid id);
         Task<UserGiftCodeDto> UseGiftCodeAsync(string code);
         Task<UserGiftCodeDto[]> GetUserGiftCodesAsync();
     }

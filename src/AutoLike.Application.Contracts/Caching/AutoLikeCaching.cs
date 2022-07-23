@@ -9,6 +9,7 @@ namespace AutoLike.Caching
         public const string Get = $"Get";
         public const string GetList = $"GetList";
         public const string ServiceCacheGroup = $"Service";
+        public const string GiftCodeCacheGroup = $"GiftCode";
         public static TimeSpan TimeExpried = TimeSpan.FromDays(1);
 
 

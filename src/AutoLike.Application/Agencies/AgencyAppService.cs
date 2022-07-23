@@ -99,13 +99,13 @@ namespace AutoLike.Agencies
             return base.UpdateAsync(id, input);
         }
 
-        [Authorize(AutoLikePermissions.GetAgencyPermission)]
+        [Authorize(AutoLikePermissions.CreateAgencyPermission)]
         public override Task<AgencyDto> GetAsync(Guid id)
         {
             return base.GetAsync(id);
         }
 
-        [Authorize(AutoLikePermissions.GetListAgencyPermission)]
+        [Authorize(AutoLikePermissions.CreateAgencyPermission)]
         public override Task<PagedResultDto<AgencyDto>> GetListAsync(PagedResultRequestDto input)
         {
             return base.GetListAsync(input);

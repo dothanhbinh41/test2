@@ -13,19 +13,33 @@ using AutoLike.Permissions;
 using Microsoft.AspNetCore.Authorization;
 using Volo.Abp;
 using AutoLike.Users;
+using AutoLike.Options;
+using Microsoft.Extensions.Options;
+using MongoDB.Driver.Linq;
+using AutoLike.Services.Dtos;
+using Volo.Abp.Caching;
+using AutoLike.Caching;
 
 namespace AutoLike.Gifts
 {
     [Authorize]
     public class GiftAppService : CrudAppService<GiftCode, GiftCodeDto, Guid, PagedResultRequestDto, CreateGiftCodeDto, UpdateGiftCodeDto>, IGiftAppService
     {
+        private readonly IDistributedCache<UserGiftCodeDto[]> giftCodeCache;
         private readonly IRepository<UserGiftCode, Guid> userGiftCodeRepository;
-
+        private readonly IUserActionLockManager userActionLockManager;
+        private readonly AppSetting appSetting;
         public GiftAppService(
+            IDistributedCache<UserGiftCodeDto[]> giftCodeCache,
+            IOptions<AppSetting> options,
             IRepository<GiftCode, Guid> repository,
-            IRepository<UserGiftCode, Guid> userGiftCodeRepository) : base(repository)
+            IRepository<UserGiftCode, Guid> userGiftCodeRepository,
+            IUserActionLockManager userActionLockManager) : base(repository)
         {
+            this.giftCodeCache = giftCodeCache;
             this.userGiftCodeRepository = userGiftCodeRepository;
+            this.userActionLockManager = userActionLockManager;
+            this.appSetting = options.Value;
         }
 
         [Authorize(AutoLikePermissions.CreateGiftCodePermission)]
@@ -45,7 +59,14 @@ namespace AutoLike.Gifts
             await base.DeleteAsync(id);
         }
 
-        public async Task<UserGiftCodeDto[]> GetUserGiftCodesAsync()
+        public Task<UserGiftCodeDto[]> GetUserGiftCodesAsync()
+        {
+            return giftCodeCache.GetOrAddAsync(
+                AutoLikeCaching.GetCache(CurrentUser.Id.Value, AutoLikeCaching.GiftCodeCacheGroup, "GetUserGiftCodes"), 
+                () => GetUserGiftCodesFromDatabaseAsync());
+        }
+
+        async Task<UserGiftCodeDto[]> GetUserGiftCodesFromDatabaseAsync()
         {
             var query = await userGiftCodeRepository.GetMongoQueryableAsync();
             var result = query.Where(d => d.User.Id == CurrentUser.Id.Value).ToArray();
@@ -58,61 +79,55 @@ namespace AutoLike.Gifts
             return base.UpdateAsync(id, input);
         }
 
-        public async Task<UserGiftCodeDto> UseGiftCodeAsync(Guid id)
+        [Authorize(AutoLikePermissions.CreateGiftCodePermission)]
+        public override Task<PagedResultDto<GiftCodeDto>> GetListAsync(PagedResultRequestDto input)
         {
-            var giftCode = await Repository.GetAsync(id);
+            return base.GetListAsync(input);
+        }
 
-            //check exist gift code
-            if (giftCode == null)
-            {
-                throw new UserFriendlyException("");
-            }
-
-            //check expire time
-            if (giftCode.ExpireTime.ToUniversalTime().Subtract(DateTime.UtcNow) < TimeSpan.Zero)
-            {
-                throw new UserFriendlyException("");
-            }
-
-            //check gift code used
-            var count = await userGiftCodeRepository.CountAsync(d => d.GiftCodeId == id);
-            if (giftCode.Count <= count)
-            {
-                throw new UserFriendlyException("");
-            }
-
-            var result = await userGiftCodeRepository.InsertAsync(new UserGiftCode
-            {
-                Code = giftCode.Code,
-                Value = giftCode.Value,
-                GiftCodeId = giftCode.Id,
-                User = CurrentUser.ToBase()
-            });
-
-            return ObjectMapper.Map<UserGiftCode, UserGiftCodeDto>(result);
+        [Authorize(AutoLikePermissions.CreateGiftCodePermission)]
+        public override Task<GiftCodeDto> GetAsync(Guid id)
+        {
+            return base.GetAsync(id);
         }
 
         public async Task<UserGiftCodeDto> UseGiftCodeAsync(string code)
         {
-            var giftCode = await Repository.FindAsync(d=>d.Code.Equals(code));
+            var checkErrors = await userActionLockManager.GetErrorCountAsync(
+                CurrentUser.Id.Value,
+                UserActionLockAction.GiftCode,
+                DateTime.Now.ToUniversalTime().AddMinutes(appSetting.TimeToBlockGiftCode));
+
+            //check errors
+            if (checkErrors > appSetting.InvalidGiftCodeTime)
+            {
+                throw new UserFriendlyException("You has blocked when use gift code");
+            }
+            var giftCode = await Repository.FindAsync(d => d.Code.Equals(code));
 
             //check exist gift code
             if (giftCode == null)
             {
-                throw new UserFriendlyException("");
+                //add error
+                await userActionLockManager.AddErrorAsync(CurrentUser.Id.Value, UserActionLockAction.GiftCode, "Giftcode not found");
+                throw new UserFriendlyException("Giftcode not found");
             }
 
             //check expire time
             if (giftCode.ExpireTime.ToUniversalTime().Subtract(DateTime.UtcNow) < TimeSpan.Zero)
             {
-                throw new UserFriendlyException("");
+                //add error
+                await userActionLockManager.AddErrorAsync(CurrentUser.Id.Value, UserActionLockAction.GiftCode, "Giftcode has been expried");
+                throw new UserFriendlyException("Giftcode has been expried");
             }
 
             //check gift code used
             var count = await userGiftCodeRepository.CountAsync(d => d.GiftCodeId == giftCode.Id);
-            if (giftCode.Count <= count)
+            if (giftCode.Count < count)
             {
-                throw new UserFriendlyException("");
+                //add error
+                await userActionLockManager.AddErrorAsync(CurrentUser.Id.Value, UserActionLockAction.GiftCode, "Giftcode over time");
+                throw new UserFriendlyException("Giftcode over time");
             }
 
             var result = await userGiftCodeRepository.InsertAsync(new UserGiftCode
