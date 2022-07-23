@@ -23,6 +23,7 @@ namespace AutoLike.Financials
     [Authorize]
     public class FinancialAppService : AutoLikeAppService, IFinancialAppService
     {
+        private readonly IUserActionLockManager userActionLockManager;
         private readonly IRepository<Promotion, Guid> promotionRepository;
         private readonly IRepository<Financial, Guid> financialRepository;
         private readonly IRepository<Transaction, Guid> transactionRepository;
@@ -32,6 +33,7 @@ namespace AutoLike.Financials
         private readonly IMongoClient mongoClient;
         private readonly AppSetting appSetting;
         public FinancialAppService(
+            IUserActionLockManager userActionLockManager,
             IOptions<AppSetting> options,
             IRepository<Promotion, Guid> promotionRepository,
             IRepository<Financial, Guid> financialRepository,
@@ -41,6 +43,7 @@ namespace AutoLike.Financials
             ICodeGenerator codeGenerator,
             IMongoClient mongoClient)
         {
+            this.userActionLockManager = userActionLockManager;
             this.promotionRepository = promotionRepository;
             this.financialRepository = financialRepository;
             this.transactionRepository = transactionRepository;
@@ -75,9 +78,22 @@ namespace AutoLike.Financials
 
         public async Task<FinancialDto> DepositAsync(DepositRequestDto request)
         {
+            //check errors
+            var checkErrors = await userActionLockManager.GetErrorCountAsync(
+                CurrentUser.Id.Value,
+                UserActionLockAction.Deposit,
+                DateTime.Now.ToUniversalTime().AddMinutes(appSetting.TimeToBlockGiftCode));
+
+            //check errors
+            if (checkErrors > appSetting.InvalidGiftCodeTime)
+            {
+                throw new UserFriendlyException("You has blocked when use gift code");
+            }
+
             if (request.Amount <= 0)
             {
-                throw new UserFriendlyException("");
+                await userActionLockManager.AddErrorAsync(CurrentUser.Id.Value, UserActionLockAction.Deposit, "Amount negative");
+                throw new UserFriendlyException("Amount negative");
             }
             //check last request
             var lastDeposit = (await financialRepository.GetQueryableAsync())
@@ -85,13 +101,15 @@ namespace AutoLike.Financials
                 .LastOrDefault(d => d.CreatorId == CurrentUser.Id.Value);
             if (lastDeposit != null && DateTime.UtcNow.Subtract(lastDeposit.CreationTime.ToUniversalTime()) < TimeSpan.FromMinutes(appSetting.TimeDeposit))
             {
-                throw new UserFriendlyException("");
+                await userActionLockManager.AddErrorAsync(CurrentUser.Id.Value, UserActionLockAction.Deposit, "Deposit too fast");
+                throw new UserFriendlyException("Deposit too fast");
             }
 
             //check amount
             if (request.Amount < appSetting.MinDepositAmount)
             {
-                throw new UserFriendlyException("");
+                await userActionLockManager.AddErrorAsync(CurrentUser.Id.Value, UserActionLockAction.Deposit, "Amount less than minimum");
+                throw new UserFriendlyException("Amount less than minimum");
             }
 
             //find promotion

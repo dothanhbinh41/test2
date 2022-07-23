@@ -20,7 +20,7 @@ namespace AutoLike.Promotions
         {
         }
 
-        [Authorize("Promotion.Create")]
+        [Authorize(AutoLikePermissions.CreatePromotionPermission)]
         public override Task<PromotionDto> CreateAsync(CreatePromotionDto input)
         {
             return base.CreateAsync(input);
@@ -36,6 +36,18 @@ namespace AutoLike.Promotions
         public override Task<PromotionDto> UpdateAsync(Guid id, PromotionDto input)
         {
             return base.UpdateAsync(id, input);
+        }
+         
+        [Authorize(AutoLikePermissions.CreatePromotionPermission)]
+        public override Task<PromotionDto> GetAsync(Guid id)
+        {
+            return base.GetAsync(id);
+        }
+
+        [Authorize(AutoLikePermissions.CreatePromotionPermission)]
+        public override Task<PagedResultDto<PromotionDto>> GetListAsync(PagedResultRequestDto input)
+        {
+            return base.GetListAsync(input);
         }
     }
 }
