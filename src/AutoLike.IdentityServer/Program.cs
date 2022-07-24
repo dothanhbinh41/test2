@@ -29,14 +29,11 @@ public class Program
         try
         {
             Log.Information("Starting AutoLike.IdentityServer.");
-            var builder = WebApplication.CreateBuilder(args);
-            builder.Host.ConfigureWebHostDefaults(d =>
-            {
-                d.UseUrls("0.0.0.0:44315");
-            });
+            var builder = WebApplication.CreateBuilder(args); 
             builder.Host.AddAppSettingsSecretsJson()
                 .UseAutofac()
-                .UseSerilog(); 
+                .UseSerilog();
+            builder.WebHost.UseUrls("localhost:44315");
             await builder.AddApplicationAsync<AutoLikeIdentityServerModule>();
             var app = builder.Build(); 
             await app.InitializeApplicationAsync();
