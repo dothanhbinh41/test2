@@ -36,6 +36,8 @@ using AutoLike.Users;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
 using System.Net;
+using Microsoft.Extensions.Configuration;
+using AutoLike.Options;
 
 namespace AutoLike;
 [DependsOn(
@@ -169,9 +171,13 @@ public class AutoLikeIdentityServerModule : AbpModule
         context.Services.Configure<ForwardedHeadersOptions>(options =>
         {
             options.KnownProxies.Add(IPAddress.Parse("149.28.192.142")); 
-        }); 
-    } 
-
+        });
+        ConfigureOptions(context, configuration);
+    }
+    private void ConfigureOptions(ServiceConfigurationContext context, IConfiguration configuration)
+    {
+        context.Services.Configure<AppSetting>(configuration.GetSection("Settings"));
+    }
     public override void OnApplicationInitialization(ApplicationInitializationContext context)
     {
         var app = context.GetApplicationBuilder();
