@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using AutoLike.Transactions;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
@@ -30,6 +31,7 @@ public class Program
         {
             Log.Information("Starting AutoLike.HttpApi.Host.");
             var builder = WebApplication.CreateBuilder(args);
+            builder.WebHost.UseUrls("http://localhost:44369");
             builder.Host.AddAppSettingsSecretsJson()
                 .UseAutofac()
                 .UseSerilog();
