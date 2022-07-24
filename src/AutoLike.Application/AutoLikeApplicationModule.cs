@@ -7,6 +7,7 @@ using Volo.Abp.PermissionManagement;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.BackgroundJobs.Hangfire;
+using Volo.Abp.Sms;
 
 namespace AutoLike;
 
@@ -19,7 +20,8 @@ namespace AutoLike;
     typeof(AbpTenantManagementApplicationModule),
     typeof(AbpFeatureManagementApplicationModule),
     typeof(AbpSettingManagementApplicationModule),
-    typeof(AbpBackgroundJobsHangfireModule)
+    typeof(AbpBackgroundJobsHangfireModule),
+    typeof(AbpSmsModule)
     )] 
     public class AutoLikeApplicationModule : AbpModule
 {

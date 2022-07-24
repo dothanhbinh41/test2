@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
@@ -29,6 +30,10 @@ public class Program
         {
             Log.Information("Starting AutoLike.IdentityServer.");
             var builder = WebApplication.CreateBuilder(args);
+            builder.Host.ConfigureWebHostDefaults(d =>
+            {
+                d.UseUrls("0.0.0.0:44315");
+            });
             builder.Host.AddAppSettingsSecretsJson()
                 .UseAutofac()
                 .UseSerilog(); 

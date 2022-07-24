@@ -168,15 +168,14 @@ public class AutoLikeIdentityServerModule : AbpModule
 
         context.Services.Configure<ForwardedHeadersOptions>(options =>
         {
-            options.KnownProxies.Add(IPAddress.Parse("149.28.192.142"));
-        });
-    }
+            options.KnownProxies.Add(IPAddress.Parse("149.28.192.142")); 
+        }); 
+    } 
 
     public override void OnApplicationInitialization(ApplicationInitializationContext context)
     {
         var app = context.GetApplicationBuilder();
-        var env = context.GetEnvironment();
-
+        var env = context.GetEnvironment(); 
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
