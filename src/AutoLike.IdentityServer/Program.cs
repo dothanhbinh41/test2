@@ -33,7 +33,7 @@ public class Program
             builder.Host.AddAppSettingsSecretsJson()
                 .UseAutofac()
                 .UseSerilog();
-            builder.WebHost.UseUrls("localhost:44315");
+            builder.WebHost.UseUrls("0.0.0.0:44315");
             await builder.AddApplicationAsync<AutoLikeIdentityServerModule>();
             var app = builder.Build(); 
             await app.InitializeApplicationAsync();
