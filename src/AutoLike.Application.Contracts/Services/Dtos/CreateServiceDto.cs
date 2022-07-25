@@ -19,6 +19,7 @@ namespace AutoLike.Services.Dtos
         public uint MinQuantity { get; set; }
 
         [Range(1, uint.MaxValue)]
-        public uint MaxQuantity { get; set; } = uint.MaxValue;
+        public uint MaxQuantity { get; set; } = uint.MaxValue; 
+        public ServiceType ServiceType { get; set; }
     }
 }

@@ -12,8 +12,9 @@ namespace AutoLike.Services
     {
         public string Name { get; set; }
         public string Code => $"{Group.ToString().ToLower()}_{Name?.ToLower()?.Replace("\\s", "")}";
-        public ServiceGroup Group { get; set; } 
-        public Warranty[] Warranties { set; get; } 
+        public ServiceGroup Group { get; set; }
+        public ServiceType ServiceType { get; set; }
+        public Warranty[] Warranties { set; get; }
         public Speed[] Speeds { get; set; }
         public uint MinQuantity { get; set; }
         public uint MaxQuantity { get; set; } = uint.MaxValue; 

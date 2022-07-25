@@ -14,6 +14,7 @@ namespace AutoLike.Services.Dtos
         public Warranty[] Warranties { set; get; }
         public Speed[] Speeds { get; set; }
         public uint MinQuantity { get; set; }
-        public uint MaxQuantity { get; set; } = uint.MaxValue;
+        public uint MaxQuantity { get; set; } = uint.MaxValue; 
+        public ServiceType ServiceType { get; set; }
     }
 }

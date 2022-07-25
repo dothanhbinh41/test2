@@ -13,5 +13,6 @@ namespace AutoLike.Services.Dtos
         public Speed[] Speeds { get; set; }
         public uint MinQuantity { get; set; }
         public uint MaxQuantity { get; set; } = uint.MaxValue;
+        public ServiceType ServiceType { get; set; }
     }
 }
