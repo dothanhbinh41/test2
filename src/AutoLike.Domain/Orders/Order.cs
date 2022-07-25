@@ -22,6 +22,7 @@ namespace AutoLike.Orders
         public Warranty Warranty { set; get; }
         public Speed Speed { set; get; }
         public ICollection<OrderProcess> Processes { get; set; }
+        public string[] Targets { get; set; }
     }
 
 

@@ -18,5 +18,6 @@ namespace AutoLike.Orders.Dtos
 
         [Range(1, int.MaxValue)]
         public int Quantity { get; set; }
+        public string[] Targets { get; set; }
     }
 }

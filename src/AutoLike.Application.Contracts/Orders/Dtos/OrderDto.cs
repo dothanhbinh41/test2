@@ -23,5 +23,6 @@ namespace AutoLike.Orders.Dtos
         public ServiceDto Service { get; set; }
         public Warranty Warranty { set; get; }
         public Speed Speed { set; get; }
+        public string[] Targets { get; set; }
     }
 }
