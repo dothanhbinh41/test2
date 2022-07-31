@@ -30,8 +30,8 @@ public class Program
         try
         {
             Log.Information("Starting AutoLike.HttpApi.Host.");
-            var builder = WebApplication.CreateBuilder(args);
-            builder.WebHost.UseUrls("http://localhost:44369");
+            var builder = WebApplication.CreateBuilder(args); 
+            builder.WebHost.UseUrls("http://0.0.0.0:10001");
             builder.Host.AddAppSettingsSecretsJson()
                 .UseAutofac()
                 .UseSerilog();
