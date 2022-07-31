@@ -184,14 +184,14 @@ public class AutoLikeIdentityServerModule : AbpModule
         var env = context.GetEnvironment(); 
         if (env.IsDevelopment())
         {
-            app.UseDeveloperExceptionPage();
+            
         }
-
+        app.UseDeveloperExceptionPage();
         app.UseAbpRequestLocalization();
-
+        app.UseErrorPage();
         if (!env.IsDevelopment())
         {
-            app.UseErrorPage();
+            
         }
 
         app.UseCorrelationId();
