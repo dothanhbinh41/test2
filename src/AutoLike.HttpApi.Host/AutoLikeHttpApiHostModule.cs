@@ -185,18 +185,33 @@ public class AutoLikeHttpApiHostModule : AbpModule
         {
             options.AddDefaultPolicy(builder =>
             {
+                //builder
+                //    .WithOrigins(
+                //        configuration["App:CorsOrigins"]
+                //            .Split(",", StringSplitOptions.RemoveEmptyEntries)
+                //            .Select(o => o.RemovePostFix("/"))
+                //            .ToArray()
+                //    )
+                //    .WithAbpExposedHeaders()
+                //    .SetIsOriginAllowedToAllowWildcardSubdomains()
+                //    .AllowAnyHeader()
+                //    .AllowAnyMethod();
+                //.AllowCredentials();
+
+                builder.SetIsOriginAllowed(_ => true);
                 builder
-                    .WithOrigins(
-                        configuration["App:CorsOrigins"]
-                            .Split(",", StringSplitOptions.RemoveEmptyEntries)
-                            .Select(o => o.RemovePostFix("/"))
-                            .ToArray()
-                    )
+                    //.WithOrigins(
+                    //    configuration["App:CorsOrigins"]
+                    //        .Split(",", StringSplitOptions.RemoveEmptyEntries)
+                    //        .Select(o => o.RemovePostFix("/"))
+                    //        .ToArray()
+                    //)
+
+                    .AllowAnyOrigin()
                     .WithAbpExposedHeaders()
                     .SetIsOriginAllowedToAllowWildcardSubdomains()
                     .AllowAnyHeader()
                     .AllowAnyMethod();
-                    //.AllowCredentials();
             });
         });
     }
