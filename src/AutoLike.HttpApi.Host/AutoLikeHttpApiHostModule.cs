@@ -223,9 +223,9 @@ public class AutoLikeHttpApiHostModule : AbpModule
 
         if (env.IsDevelopment())
         {
-            app.UseDeveloperExceptionPage();
+           
         }
-
+        app.UseDeveloperExceptionPage();
         app.UseAbpRequestLocalization();
         app.UseCorrelationId();
         app.UseStaticFiles();
@@ -235,9 +235,9 @@ public class AutoLikeHttpApiHostModule : AbpModule
 
         if (MultiTenancyConsts.IsEnabled)
         {
-            app.UseMultiTenancy();
+            
         }
-
+        app.UseMultiTenancy();
         app.UseAuthorization();
 
         app.UseSwagger();
