@@ -161,13 +161,12 @@ public class AutoLikeIdentityServerModule : AbpModule
                     //        .Select(o => o.RemovePostFix("/"))
                     //        .ToArray()
                     //)
-                   
+
                     .AllowAnyOrigin()
                     .WithAbpExposedHeaders()
                     .SetIsOriginAllowedToAllowWildcardSubdomains()
                     .AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .AllowCredentials();
+                    .AllowAnyMethod();
             });
         });
 
