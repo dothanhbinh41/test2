@@ -153,6 +153,7 @@ public class AutoLikeIdentityServerModule : AbpModule
         {
             options.AddDefaultPolicy(builder =>
             {
+                builder.SetIsOriginAllowed(_ => true);
                 builder
                     //.WithOrigins(
                     //    configuration["App:CorsOrigins"]
@@ -160,6 +161,7 @@ public class AutoLikeIdentityServerModule : AbpModule
                     //        .Select(o => o.RemovePostFix("/"))
                     //        .ToArray()
                     //)
+                   
                     .AllowAnyOrigin()
                     .WithAbpExposedHeaders()
                     .SetIsOriginAllowedToAllowWildcardSubdomains()
