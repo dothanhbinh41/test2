@@ -48,7 +48,18 @@ namespace AutoLike.Agencies
             {
                 key = await agencyKeyRepository.InsertAsync(new AgencyKey { AgencyId = agency.Id });
             }
-            return key.Id; 
+            return key.Id;
+        }
+
+        public async Task<AgencyDetailDto> GetUserAgencyAsync()
+        {
+            var exist = await Repository.FindAsync(d => d.UserId == CurrentUser.Id.Value);
+            if (exist == null)
+            {
+                throw new Volo.Abp.UserFriendlyException("");
+            }
+
+            return ObjectMapper.Map<Agency, AgencyDetailDto>(exist);
         }
 
         public async Task<AgencyDto> RegisterAgency(RegisterAgencyDto request)
@@ -77,7 +88,7 @@ namespace AutoLike.Agencies
             {
                 throw new Volo.Abp.UserFriendlyException("");
             }
-            var entity = ObjectMapper.Map<CreateAgencyDto, Agency>(input); 
+            var entity = ObjectMapper.Map<CreateAgencyDto, Agency>(input);
             using (var session = mongoClient.StartSession())
             {
                 session.StartTransaction();
@@ -109,6 +120,6 @@ namespace AutoLike.Agencies
         public override Task<PagedResultDto<AgencyDto>> GetListAsync(PagedResultRequestDto input)
         {
             return base.GetListAsync(input);
-        }
+        } 
     }
 }

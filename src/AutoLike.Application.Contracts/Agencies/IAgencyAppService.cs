@@ -12,5 +12,6 @@ namespace AutoLike.Agencies
     {
         Task<AgencyDto> RegisterAgency(RegisterAgencyDto request);
         Task<Guid> GetAgencyKeyAsync();
+        Task<AgencyDetailDto> GetUserAgencyAsync();
     }
 }
