@@ -62,7 +62,7 @@ namespace AutoLike.Gifts
         public Task<UserGiftCodeDto[]> GetUserGiftCodesAsync()
         {
             return giftCodeCache.GetOrAddAsync(
-                AutoLikeCaching.GetCache(CurrentUser.Id.Value, AutoLikeCaching.GiftCodeCacheGroup, "GetUserGiftCodes"), 
+                AutoLikeCaching.GetCache(CurrentUser.Id.Value, AutoLikeCaching.GiftCodeCacheGroup, "GetUserGiftCodes"),
                 () => GetUserGiftCodesFromDatabaseAsync());
         }
 
@@ -91,7 +91,7 @@ namespace AutoLike.Gifts
             return base.GetAsync(id);
         }
 
-        public async Task<UserGiftCodeDto> UseGiftCodeAsync(string code)
+        public async Task<UserGiftCodeDto> UseGiftCodeAsync(UseGiftCodeDto code)
         {
             var checkErrors = await userActionLockManager.GetErrorCountAsync(
                 CurrentUser.Id.Value,
@@ -103,7 +103,7 @@ namespace AutoLike.Gifts
             {
                 throw new UserFriendlyException("You has blocked when use gift code");
             }
-            var giftCode = await Repository.FindAsync(d => d.Code.Equals(code));
+            var giftCode = await Repository.FindAsync(d => d.Code.Equals(code.Code));
 
             //check exist gift code
             if (giftCode == null)
