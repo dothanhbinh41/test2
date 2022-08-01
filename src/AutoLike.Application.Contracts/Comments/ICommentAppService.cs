@@ -10,7 +10,7 @@ namespace AutoLike.Comments
 {
     public interface ICommentAppService : IApplicationService
     {
-        Task<CommentDto[]> GetCommentsAsync();
+        Task<CommentDto[]> GetUserCommentsAsync();
         Task<CommentDto> CreateCommentAsync(CreateCommentDto request);
         Task<CommentDto[]> CreateCommentsAsync(CreateCommentsDto request);
         Task<bool> DeleteCommentsAsync(Guid id);

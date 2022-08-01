@@ -45,7 +45,7 @@ namespace AutoLike.Comments
             return request.Contents.Select(d => new CommentDto { Content = d }).ToArray();
         }
 
-        public async Task<CommentDto[]> GetCommentsAsync()
+        public async Task<CommentDto[]> GetUserCommentsAsync()
         {
             return await distributedCache.GetOrAddAsync(UserCommentCacheKey, async () =>
             {
