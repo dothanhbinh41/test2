@@ -13,8 +13,8 @@ namespace AutoLike.Comments
 {
     public class CommentAppService : AutoLikeAppService, ICommentAppService
     {
-        private readonly IRepository<Comment> repository;
-        private readonly IDistributedCache<CommentDto[]> distributedCache;
+        readonly IRepository<Comment> repository;
+        readonly IDistributedCache<CommentDto[]> distributedCache;
 
         public CommentAppService(
             IRepository<Comment> repository,
@@ -29,26 +29,26 @@ namespace AutoLike.Comments
         {
             var entity = ObjectMapper.Map<CreateCommentDto, Comment>(request);
             var created = await repository.InsertAsync(entity);
-            await distributedCache.RefreshAsync(UserCacheKey);
+            await distributedCache.RemoveAsync(UserCommentCacheKey);
             return ObjectMapper.Map<Comment, CommentDto>(created);
         }
 
         public async Task<CommentDto[]> CreateCommentsAsync(CreateCommentsDto request)
         {
             await repository.InsertManyAsync(request.Contents.Select(d => new Comment { Content = d }));
-            await distributedCache.RefreshAsync(UserCacheKey);
+            await distributedCache.RemoveAsync(UserCommentCacheKey);
             return request.Contents.Select(d => new CommentDto { Content = d }).ToArray();
         }
 
         public async Task<CommentDto[]> GetCommentsAsync()
         {
-            return await distributedCache.GetOrAddAsync(UserCacheKey, async () =>
+            return await distributedCache.GetOrAddAsync(UserCommentCacheKey, async () =>
             {
                 var obj = await repository.GetListAsync(d => d.UserId == CurrentUser.Id.Value);
                 return ObjectMapper.Map<List<Comment>, CommentDto[]>(obj);
             },
             () => new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1) });
-        } 
-        string UserCacheKey => $"{AutoLikeCaching.CommentCacheGroup}:User:{CurrentUser.Id.Value}";
+        }
+        string UserCommentCacheKey => $"{AutoLikeCaching.CommentCacheGroup}:User:{CurrentUser.Id.Value}"; 
     }
 }
