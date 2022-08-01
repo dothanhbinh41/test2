@@ -65,5 +65,14 @@ namespace AutoLike.Services
                 () => base.GetListAsync(input), // factory
                 () => new Microsoft.Extensions.Caching.Distributed.DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = AutoLikeCaching.TimeExpried }); //option
         }
+
+        public async Task<ServiceGroupResultDto[]> GetAllServiceGroupsAsync()
+        {
+            var query = await Repository.GetQueryableAsync();
+            return query
+                .GroupBy(d => d.Group)
+                .Select(d => new ServiceGroupResultDto { Group = d.Key, Services = ObjectMapper.Map<Service[], ServiceDto[]>(d.ToArray()) })
+                .ToArray();
+        }
     }
 }
