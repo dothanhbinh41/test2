@@ -12,5 +12,6 @@ namespace AutoLike.Services
     public interface IServicesAppService : ICrudAppService<ServiceDto, Guid, PagedResultRequestDto, CreateServiceDto, UpdateServiceDto>
     {
         Task<ServiceGroupResultDto[]> GetAllServiceGroupsAsync();
+        Task<ServiceDto[]> GetServiceByGroupAsync(ServiceGroup group);
     }
 }

@@ -20,14 +20,17 @@ namespace AutoLike.Services
     public class ServicesAppService : CrudAppService<Service, ServiceDto, Guid, PagedResultRequestDto, CreateServiceDto, UpdateServiceDto>, IServicesAppService
     {
         private readonly IDistributedCache<ServiceDto> serviceCache;
-        private readonly IDistributedCache<PagedResultDto<ServiceDto>> listServiceCache;
+        private readonly IDistributedCache<ServiceGroupResultDto[]> serviceGroupCache;
+        private readonly IDistributedCache<ServiceDto[]> listServiceCache;
 
         public ServicesAppService(
             IRepository<Service, Guid> repository,
             IDistributedCache<ServiceDto> serviceCache,
-            IDistributedCache<PagedResultDto<ServiceDto>> listServiceCache) : base(repository)
+            IDistributedCache<ServiceGroupResultDto[]> serviceGroupCache,
+            IDistributedCache<ServiceDto[]> listServiceCache) : base(repository)
         {
             this.serviceCache = serviceCache;
+            this.serviceGroupCache = serviceGroupCache;
             this.listServiceCache = listServiceCache;
         }
 
@@ -49,6 +52,7 @@ namespace AutoLike.Services
             return base.UpdateAsync(id, input);
         }
 
+        [Authorize(AutoLikePermissions.CreateServicePermission)]
         public override Task<ServiceDto> GetAsync(Guid id)
         {
             return serviceCache.GetOrAddAsync(
@@ -57,22 +61,36 @@ namespace AutoLike.Services
                 () => new Microsoft.Extensions.Caching.Distributed.DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = AutoLikeCaching.TimeExpried }); //option
         }
 
+        [Authorize(AutoLikePermissions.CreateServicePermission)]
         public override Task<PagedResultDto<ServiceDto>> GetListAsync(PagedResultRequestDto input)
         {
-            input.MaxResultCount = PagedResultRequestDto.MaxMaxResultCount;
-            return listServiceCache.GetOrAddAsync(
-                AutoLikeCaching.GetListCache(input.SkipCount, AutoLikeCaching.ServiceCacheGroup), //get key
-                () => base.GetListAsync(input), // factory
-                () => new Microsoft.Extensions.Caching.Distributed.DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = AutoLikeCaching.TimeExpried }); //option
+            return base.GetListAsync(input);
         }
 
-        public async Task<ServiceGroupResultDto[]> GetAllServiceGroupsAsync()
+        public Task<ServiceGroupResultDto[]> GetAllServiceGroupsAsync()
         {
-            var query = await Repository.GetQueryableAsync();
-            return query
-                .GroupBy(d => d.Group)
-                .Select(d => new ServiceGroupResultDto { Group = d.Key, Services = ObjectMapper.Map<Service[], ServiceDto[]>(d.ToArray()) })
-                .ToArray();
+            return serviceGroupCache.GetOrAddAsync($"{AutoLikeCaching.ServiceCacheGroup}:{AutoLikeCaching.AllServiceGroup}",
+                async () =>
+                {
+                    var query = await Repository.GetQueryableAsync();
+                    return query
+                       .GroupBy(d => d.Group)
+                       .Select(d => new ServiceGroupResultDto { Group = d.Key, Services = ObjectMapper.Map<Service[], ServiceDto[]>(d.ToArray()) })
+                       .ToArray();
+                },
+                () => new Microsoft.Extensions.Caching.Distributed.DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = AutoLikeCaching.TimeExpried });
+        }
+
+        public Task<ServiceDto[]> GetServiceByGroupAsync(ServiceGroup group)
+        {
+            return listServiceCache.GetOrAddAsync(
+                $"{AutoLikeCaching.ServiceCacheGroup}:{AutoLikeCaching.ServiceGroup}:{group}",
+                async () =>
+                {
+                    var query = await Repository.GetQueryableAsync();
+                    return ObjectMapper.Map<Service[], ServiceDto[]>(query.Where(d => d.Group == group).ToArray());
+                },
+                () => new Microsoft.Extensions.Caching.Distributed.DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = AutoLikeCaching.TimeExpried });
         }
     }
 }
