@@ -5,9 +5,8 @@ using Volo.Abp.Application.Dtos;
 
 namespace AutoLike.Comments.Dtos
 {
-    public class CommentDto:EntityDto<Guid>
-    { 
-        public string Content { get; set; }
-        public CommentStatus Status { get; set; }
+    public class ApproveComment : EntityDto<Guid>
+    {
+        public bool Approve { get; set; }
     }
 }

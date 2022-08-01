@@ -30,7 +30,11 @@ public class AutoLikePermissionDefinitionProvider : PermissionDefinitionProvider
         var agencyGroup = context.AddGroup(AutoLikePermissions.AgencyPermissionGroup, L("Agency"));
         agencyGroup.AddPermission(AutoLikePermissions.CreateAgencyPermission, L("Create"));
         agencyGroup.AddPermission(AutoLikePermissions.UpdateAgencyPermission, L("Update"));
-        agencyGroup.AddPermission(AutoLikePermissions.DeleteAgencyPermission, L("Delete")); 
+        agencyGroup.AddPermission(AutoLikePermissions.DeleteAgencyPermission, L("Delete"));       
+        
+        var commentGroup = context.AddGroup(AutoLikePermissions.CommentPermissionGroup, L("Comment"));
+        commentGroup.AddPermission(AutoLikePermissions.ApproveCommentPermission, L("Approve"));
+        commentGroup.AddPermission(AutoLikePermissions.GetCommentPermission, L("GetComment")); 
     }
 
     private static LocalizableString L(string name)

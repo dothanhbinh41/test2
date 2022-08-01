@@ -11,5 +11,6 @@ namespace AutoLike.Comments
     {
         public Guid UserId { get; set; }
         public string Content { get; set; }
+        public CommentStatus Status { get; set; }
     }
 }
