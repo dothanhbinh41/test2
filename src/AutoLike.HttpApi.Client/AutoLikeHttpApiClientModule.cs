@@ -12,7 +12,7 @@ namespace AutoLike;
 
 [DependsOn(
     typeof(AutoLikeApplicationContractsModule),
-    typeof(AbpAccountHttpApiClientModule),
+    //typeof(AbpAccountHttpApiClientModule),
     typeof(AbpIdentityHttpApiClientModule),
     typeof(AbpPermissionManagementHttpApiClientModule),
     typeof(AbpTenantManagementHttpApiClientModule),

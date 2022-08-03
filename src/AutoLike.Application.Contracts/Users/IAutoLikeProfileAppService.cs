@@ -6,6 +6,11 @@ namespace AutoLike.Users
 {
     public interface IAutoLikeProfileAppService : IApplicationService
     {
-        Task<QRCodeDto> GenerateQrcodeAsync();
+        Task<QRCodeDto> GenerateQrcodeAsync(); 
+        Task<ProfileDto> GetAsync();
+
+        Task<ProfileDto> UpdateAsync(UpdateProfileDto input);
+
+        Task ChangePasswordAsync(ChangePasswordInput input);
     }
 }

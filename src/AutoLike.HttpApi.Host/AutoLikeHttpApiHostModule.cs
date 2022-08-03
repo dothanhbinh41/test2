@@ -29,8 +29,8 @@ using Volo.Abp.VirtualFileSystem;
 using Volo.Abp.BackgroundJobs.Hangfire;
 using Hangfire;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Volo.Abp.Account;
 using AutoLike.Options;
+using Microsoft.AspNetCore.Identity;
 
 namespace AutoLike;
 [DependsOn(
@@ -60,7 +60,13 @@ public class AutoLikeHttpApiHostModule : AbpModule
         ConfigureCors(context, configuration);
         ConfigureSwaggerServices(context, configuration);
         ConfigureHangfire(context); 
-        ConfigureOptions(context, configuration);  
+        ConfigureOptions(context, configuration);
+
+        Configure<IdentityOptions>(d =>
+        {
+            d.User.RequireUniqueEmail = false;
+            d.User.AllowedUserNameCharacters = "0123456789";
+        });
     }
 
     private void ConfigureOptions(ServiceConfigurationContext context, IConfiguration configuration)

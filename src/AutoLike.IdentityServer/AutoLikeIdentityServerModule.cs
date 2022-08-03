@@ -38,6 +38,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using System.Net;
 using Microsoft.Extensions.Configuration;
 using AutoLike.Options;
+using Microsoft.AspNetCore.Identity;
 
 namespace AutoLike;
 [DependsOn(
@@ -65,7 +66,7 @@ public class AutoLikeIdentityServerModule : AbpModule
     {
         var hostingEnvironment = context.Services.GetHostingEnvironment();
         var configuration = context.Services.GetConfiguration();
-         
+
 
 
         Configure<AbpLocalizationOptions>(options =>
@@ -110,15 +111,15 @@ public class AutoLikeIdentityServerModule : AbpModule
 
         Configure<AbpAuditingOptions>(options =>
         {
-                //options.IsEnabledForGetRequests = true;
-                options.ApplicationName = "AuthServer";
+            //options.IsEnabledForGetRequests = true;
+            options.ApplicationName = "AuthServer";
         });
 
         if (hostingEnvironment.IsDevelopment())
         {
             Configure<AbpVirtualFileSystemOptions>(options =>
             {
-                    options.FileSets.ReplaceEmbeddedByPhysical<AutoLikeDomainSharedModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}AutoLike.Domain.Shared"));
+                options.FileSets.ReplaceEmbeddedByPhysical<AutoLikeDomainSharedModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}AutoLike.Domain.Shared"));
                 options.FileSets.ReplaceEmbeddedByPhysical<AutoLikeDomainModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}AutoLike.Domain"));
             });
         }
@@ -130,6 +131,12 @@ public class AutoLikeIdentityServerModule : AbpModule
 
             options.Applications["Angular"].RootUrl = configuration["App:ClientUrl"];
             options.Applications["Angular"].Urls[AccountUrlNames.PasswordReset] = "account/reset-password";
+        });
+
+        Configure<IdentityOptions>(d =>
+        {
+            d.User.RequireUniqueEmail = false;
+            d.User.AllowedUserNameCharacters = "0123456789";
         });
 
         Configure<AbpBackgroundJobOptions>(options =>
@@ -148,7 +155,7 @@ public class AutoLikeIdentityServerModule : AbpModule
             //var redis = ConnectionMultiplexer.Connect(configuration["Redis:Configuration"]);
             //dataProtectionBuilder.PersistKeysToStackExchangeRedis(redis, "AutoLike-Protection-Keys");
         }
-         
+
         context.Services.AddCors(options =>
         {
             options.AddDefaultPolicy(builder =>
@@ -172,7 +179,7 @@ public class AutoLikeIdentityServerModule : AbpModule
 
         context.Services.Configure<ForwardedHeadersOptions>(options =>
         {
-            options.KnownProxies.Add(IPAddress.Parse("149.28.192.142")); 
+            options.KnownProxies.Add(IPAddress.Parse("149.28.192.142"));
         });
         ConfigureOptions(context, configuration);
     }
@@ -183,17 +190,17 @@ public class AutoLikeIdentityServerModule : AbpModule
     public override void OnApplicationInitialization(ApplicationInitializationContext context)
     {
         var app = context.GetApplicationBuilder();
-        var env = context.GetEnvironment(); 
+        var env = context.GetEnvironment();
         if (env.IsDevelopment())
         {
-            
+
         }
         app.UseDeveloperExceptionPage();
         app.UseAbpRequestLocalization();
         app.UseErrorPage();
         if (!env.IsDevelopment())
         {
-            
+
         }
 
         app.UseCorrelationId();

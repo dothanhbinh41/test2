@@ -1,6 +1,5 @@
 ﻿using Localization.Resources.AbpUi;
 using AutoLike.Localization;
-using Volo.Abp.Account;
 using Volo.Abp.FeatureManagement;
 using Volo.Abp.Identity;
 using Volo.Abp.Localization;
@@ -13,7 +12,7 @@ namespace AutoLike;
 
 [DependsOn(
     typeof(AutoLikeApplicationContractsModule),
-    typeof(AbpAccountHttpApiModule),
+    //typeof(AbpAccountHttpApiModule),
     typeof(AbpIdentityHttpApiModule),
     typeof(AbpPermissionManagementHttpApiModule),
     typeof(AbpTenantManagementHttpApiModule),

@@ -1,40 +1,67 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoLike.Accounts.Dtos;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Volo.Abp.Account;
-using Volo.Abp.Account.Emailing;
+using Volo.Abp; 
 using Volo.Abp.Identity;
+using Volo.Abp.ObjectExtending;
+using IdentityUser = Volo.Abp.Identity.IdentityUser;
 
 namespace AutoLike.Accounts
 {
-    public class AccountAppService : Volo.Abp.Account.AccountAppService
+    public class AccountAppService : AutoLikeAppService, IAccountAppService
     {
+        private readonly IdentityUserManager userManager;
+        private readonly IOptions<IdentityOptions> identityOptions;
+
         public AccountAppService(
-            IdentityUserManager userManager, 
-            IIdentityRoleRepository roleRepository,
-            IAccountEmailer accountEmailer, 
-            IdentitySecurityLogManager identitySecurityLogManager, 
-            IOptions<IdentityOptions> identityOptions) : base(userManager, roleRepository, accountEmailer, identitySecurityLogManager, identityOptions)
+            IdentityUserManager userManager,
+            IOptions<IdentityOptions> identityOptions)
         {
+            this.userManager = userManager;
+            this.identityOptions = identityOptions;
         }
 
-        public override Task<IdentityUserDto> RegisterAsync(RegisterDto input)
+        public async Task<IdentityUserDto> RegisterAsync(RegisterByPhoneDto input)
         {
-            return base.RegisterAsync(input);
+            await CheckSelfRegistrationAsync(input);
+
+            await identityOptions.SetAsync();
+            var id = GuidGenerator.Create();
+            var user = new IdentityUser(id, input.PhoneNumber, $"{id}@autolike.com", CurrentTenant.Id);
+
+            input.MapExtraPropertiesTo(user);
+
+            (await userManager.CreateAsync(user, input.Password)).CheckErrors();
+
+            await userManager.SetPhoneNumberAsync(user, input.PhoneNumber);
+            await userManager.AddDefaultRolesAsync(user);
+
+            return ObjectMapper.Map<IdentityUser, IdentityUserDto>(user);
         }
 
-        public override Task SendPasswordResetCodeAsync(SendPasswordResetCodeDto input)
+        Task CheckSelfRegistrationAsync(RegisterByPhoneDto inpu)
         {
-            return base.SendPasswordResetCodeAsync(input);
+            var user = userManager.Users.FirstOrDefault(d => d.PhoneNumber == inpu.PhoneNumber);
+            if (user != null)
+            {
+                throw new UserFriendlyException("");
+            }
+            return Task.CompletedTask;
         }
 
-        public override Task ResetPasswordAsync(ResetPasswordDto input)
-        {
-            return base.ResetPasswordAsync(input);
-        }
+        //public override Task SendPasswordResetCodeAsync(SendPasswordResetCodeDto input)
+        //{
+        //    return base.SendPasswordResetCodeAsync(input);
+        //}
+
+        //public override Task ResetPasswordAsync(ResetPasswordDto input)
+        //{
+        //    return base.ResetPasswordAsync(input);
+        //}
     }
 }
