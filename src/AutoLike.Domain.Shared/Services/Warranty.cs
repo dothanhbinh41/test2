@@ -5,7 +5,7 @@ using System.Text;
 
 namespace AutoLike.Services
 {
-    public struct Warranty : IEquatable<Warranty> 
+    public class Warranty : IEquatable<Warranty> 
     {
         public WarrantyTimeUnit TimeUnit { get; set; }
         public int Time { get; set; }

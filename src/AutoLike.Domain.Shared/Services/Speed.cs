@@ -5,7 +5,7 @@ using System.Text;
 
 namespace AutoLike.Services
 {
-    public struct Speed : IEquatable<Speed>
+    public class Speed : IEquatable<Speed>
     {
         public SpeedType Type { get; set; }
         public decimal Price { get; set; }
