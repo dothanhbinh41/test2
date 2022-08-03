@@ -64,8 +64,7 @@ public class AutoLikeHttpApiHostModule : AbpModule
 
         Configure<IdentityOptions>(d =>
         {
-            d.User.RequireUniqueEmail = false;
-            d.User.AllowedUserNameCharacters = "0123456789";
+            d.User.RequireUniqueEmail = false; 
         });
     }
 
