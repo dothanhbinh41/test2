@@ -6,6 +6,12 @@ using AutoMapper;
 using AutoLike.Users.Dtos;
 using AutoLike.Users;
 using Volo.Abp.Identity;
+using AutoLike.Services.Dtos;
+using AutoLike.Services;
+using AutoLike.Orders.Dtos;
+using AutoLike.Orders;
+using AutoLike.Agencies.Dtos;
+using AutoLike.Agencies;
 
 namespace AutoLike;
 
@@ -26,5 +32,18 @@ public class AutoLikeApplicationAutoMapperProfile : Profile
         CreateMap<UserBaseDto, IdentityUser>();
         CreateMap<UserBase, UserBaseDto>();
         CreateMap<UserBaseDto, UserBase>();
+
+
+        CreateMap<CreateServiceDto, Service>(); 
+        CreateMap<ServiceDto, Service>(); 
+        CreateMap<Service, ServiceDto>();         
+        
+        CreateMap<CreateOrderDto, Order>(); 
+        CreateMap<OrderDto, Order>(); 
+        CreateMap<Order, OrderDto>();
+
+        CreateMap<CreateAgencyDto, Agency>();
+        CreateMap<AgencyDto, Agency>();
+        CreateMap<Agency, AgencyDto>();
     }
 }
