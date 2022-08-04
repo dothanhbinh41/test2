@@ -40,6 +40,7 @@ using Microsoft.Extensions.Configuration;
 using AutoLike.Options;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Cors.Infrastructure;
+using CorsOptions = Microsoft.AspNetCore.Cors.Infrastructure.CorsOptions;
 
 namespace AutoLike;
 [DependsOn(
@@ -155,10 +156,28 @@ public class AutoLikeIdentityServerModule : AbpModule
             //var redis = ConnectionMultiplexer.Connect(configuration["Redis:Configuration"]);
             //dataProtectionBuilder.PersistKeysToStackExchangeRedis(redis, "AutoLike-Protection-Keys");
         }
+        context.Services.Configure<CorsOptions>(option =>
+        {
+            option.AddDefaultPolicy(builder =>
+            {
+                builder
+                    .WithOrigins(
+                        configuration["App:CorsOrigins"]
+                            .Split(",", StringSplitOptions.RemoveEmptyEntries)
+                            .Select(o => o.RemovePostFix("/"))
+                            .ToArray()
+                    )
 
+                    //.AllowAnyOrigin() 
+                    .DisallowCredentials()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .SetIsOriginAllowedToAllowWildcardSubdomains();
+            });
+        });
         context.Services.AddCors(options =>
         {
-            CorsPolicyBuilder x;
+            
             options.AddDefaultPolicy(builder =>
             { 
                 builder
