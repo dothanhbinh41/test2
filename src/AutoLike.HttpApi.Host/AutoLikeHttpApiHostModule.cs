@@ -204,14 +204,13 @@ public class AutoLikeHttpApiHostModule : AbpModule
                 //.AllowCredentials();
                  
                 builder
-                    //.WithOrigins(
-                    //    configuration["App:CorsOrigins"]
-                    //        .Split(",", StringSplitOptions.RemoveEmptyEntries)
-                    //        .Select(o => o.RemovePostFix("/"))
-                    //        .ToArray()
-                    //)
-                    .AllowCredentials()
-                    .AllowAnyOrigin()
+                    .WithOrigins(
+                        configuration["App:CorsOrigins"]
+                            .Split(",", StringSplitOptions.RemoveEmptyEntries)
+                            .Select(o => o.RemovePostFix("/"))
+                            .ToArray()
+                    )
+                    .AllowCredentials() 
                     .WithAbpExposedHeaders()
                     .SetIsOriginAllowedToAllowWildcardSubdomains()
                     .AllowAnyHeader()

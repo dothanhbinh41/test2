@@ -160,14 +160,14 @@ public class AutoLikeIdentityServerModule : AbpModule
             options.AddDefaultPolicy(builder =>
             { 
                 builder
-                    //.WithOrigins(
-                    //    configuration["App:CorsOrigins"]
-                    //        .Split(",", StringSplitOptions.RemoveEmptyEntries)
-                    //        .Select(o => o.RemovePostFix("/"))
-                    //        .ToArray()
-                    //)
+                    .WithOrigins(
+                        configuration["App:CorsOrigins"]
+                            .Split(",", StringSplitOptions.RemoveEmptyEntries)
+                            .Select(o => o.RemovePostFix("/"))
+                            .ToArray()
+                    )
 
-                    .AllowAnyOrigin() 
+                    //.AllowAnyOrigin() 
                     .AllowCredentials()
                     .AllowAnyHeader()
                     .AllowAnyMethod()
