@@ -45,5 +45,6 @@ public class AutoLikeApplicationAutoMapperProfile : Profile
         CreateMap<CreateAgencyDto, Agency>();
         CreateMap<AgencyDto, Agency>();
         CreateMap<Agency, AgencyDto>();
+        CreateMap<Service, ServiceBase>();
     }
 }

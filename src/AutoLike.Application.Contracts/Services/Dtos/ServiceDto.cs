@@ -8,7 +8,7 @@ namespace AutoLike.Services.Dtos
     public class ServiceDto : EntityDto<Guid>
     {
         public string Name { get; set; }
-        public string Code => $"{Group.ToString().ToLower()}_{Name?.ToLower()?.Replace("\\s", "")}";
+        public string Code { set; get; }
         public ServiceGroup Group { get; set; }
         public double Price { get; set; }
         public Warranty[] Warranties { set; get; }

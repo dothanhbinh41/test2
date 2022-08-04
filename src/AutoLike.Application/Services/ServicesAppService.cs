@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Authorization;
 using AutoLike.Permissions;
 using Volo.Abp.Caching;
 using AutoLike.Caching;
+using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 namespace AutoLike.Services
 {
@@ -35,9 +37,15 @@ namespace AutoLike.Services
         }
 
         [Authorize(AutoLikePermissions.CreateServicePermission)]
-        public override Task<ServiceDto> CreateAsync(CreateServiceDto input)
+        public override async Task<ServiceDto> CreateAsync(CreateServiceDto input)
         {
-            return base.CreateAsync(input);
+            var code = $"{input.Group.ToString().ToLower()}_{input.Name?.ToLower()?.Replace(" ", "")}"; 
+            await CheckCreatePolicyAsync(); 
+            var entity = await MapToEntityAsync(input); 
+            TryToSetTenantId(entity);
+            entity.Code = code;
+            await Repository.InsertAsync(entity, autoSave: true); 
+            return await MapToGetOutputDtoAsync(entity); 
         }
 
         [Authorize(AutoLikePermissions.DeleteServicePermission)]

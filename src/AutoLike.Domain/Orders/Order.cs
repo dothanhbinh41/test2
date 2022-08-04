@@ -18,7 +18,8 @@ namespace AutoLike.Orders
         public decimal Price { get; set; }
         public string Uid { get; set; }
         public string RequestUid { get; set; }
-        public Service Service { get; set; }
+        public ServiceBase Service { get; set; }
+        public string ServiceCode { get; set; }
         public Warranty Warranty { set; get; }
         public Speed Speed { set; get; }
         public ICollection<OrderProcess> Processes { get; set; }

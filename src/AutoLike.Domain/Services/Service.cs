@@ -11,7 +11,7 @@ namespace AutoLike.Services
     public class Service : FullAuditedAggregateRoot<Guid>
     {
         public string Name { get; set; }
-        public string Code => $"{Group.ToString().ToLower()}_{Name?.ToLower()?.Replace("\\s", "")}";
+        public string Code { set; get; }
         public ServiceGroup Group { get; set; }
         public ServiceType ServiceType { get; set; }
         public Warranty[] Warranties { set; get; }
@@ -19,4 +19,5 @@ namespace AutoLike.Services
         public uint MinQuantity { get; set; }
         public uint MaxQuantity { get; set; } = uint.MaxValue; 
     }
+    
 }

@@ -4,10 +4,13 @@ using AutoLike.Services;
 using AutoLike.Transactions;
 using AutoLike.Users;
 using AutoLike.Validators;
+using IdentityServer4.Models;
+using Microsoft.AspNetCore.Authorization;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp;
@@ -19,6 +22,7 @@ using Volo.Abp.ObjectMapping;
 
 namespace AutoLike.Orders
 {
+    [Authorize]
     public class OrdersAppService : AutoLikeAppService, IOrdersAppService
     {
         public const double CancelTime = 15;//mins
@@ -28,24 +32,24 @@ namespace AutoLike.Orders
         private readonly IMongoClient mongoClient;
         private readonly ITransactionService transactionService;
         private readonly IRepository<OrderProcess, Guid> orderProcessRepository;
-        private readonly IRepository<Order, Guid> orderRepository; 
-        private readonly IRepository<Service, Guid> serviceRepository; 
+        private readonly IRepository<Order, Guid> orderRepository;
+        private readonly IRepository<Service, Guid> serviceRepository;
 
         public OrdersAppService(
             IUidValidator uidValidator,
             ICodeGenerator codeGenerator,
-            IBackgroundJobManager backgroundJobManager, 
+            IBackgroundJobManager backgroundJobManager,
             ITransactionService transactionService,
             IRepository<OrderProcess, Guid> orderProcessRepository,
-            IRepository<Order, Guid> orderRepository, 
+            IRepository<Order, Guid> orderRepository,
             IRepository<Service, Guid> serviceRepository)
         {
             this.uidValidator = uidValidator;
             this.codeGenerator = codeGenerator;
-            this.backgroundJobManager = backgroundJobManager; 
+            this.backgroundJobManager = backgroundJobManager;
             this.transactionService = transactionService;
             this.orderProcessRepository = orderProcessRepository;
-            this.orderRepository = orderRepository; 
+            this.orderRepository = orderRepository;
             this.serviceRepository = serviceRepository;
             mongoClient = new MongoClient("mongodb://admin:fukSkNQngNpPG6e@62.112.8.24:27017/AutoLikeV8?authSource=admin");
         }
@@ -95,6 +99,7 @@ namespace AutoLike.Orders
 
             var order = new Order
             {
+                ServiceCode = service.Code,
                 User = CurrentUser.ToBase(),
                 Status = OrderStatus.Active,
                 Quantity = request.Quantity,
@@ -103,7 +108,7 @@ namespace AutoLike.Orders
                 Uid = uuid,
                 RequestUid = request.Uid,
                 Price = request.Quantity * (request.Speed.Price + request.Warranty.Price),
-                Service = service
+                Service = ObjectMapper.Map<Service, ServiceBase>(service)
             };
             order.Code = codeGenerator.Generate(order.Id, GenerateCode.Order);
             using (var session = mongoClient.StartSession())
@@ -131,15 +136,16 @@ namespace AutoLike.Orders
             int max = 10)
         {
             var query = await orderRepository.GetQueryableAsync();
-            var items = query.Where(
-                d => d.User.Id == CurrentUser.Id.Value
-                && d.Service.Code == serviceCode
-                && (!from.HasValue || d.CreationTime >= from.Value)
-                && (!to.HasValue || d.CreationTime <= to.Value)
-                && (!status.HasValue || d.Status == status));
-            var total = items.Count();
-            var itemsPage = items.Skip(skip).Take(max).ToList();
-            return new PagedResultDto<OrderDto>(total, ObjectMapper.Map<List<Order>, List<OrderDto>>(itemsPage));
+
+            var items = query
+                .Where(d => d.User.Id == CurrentUser.Id.Value && d.ServiceCode == serviceCode)
+                .WhereIf(status.HasValue, d => d.Status == status)
+                .WhereIf(from.HasValue, d => d.CreationTime >= from.Value)
+                .WhereIf(to.HasValue, d => d.CreationTime <= to.Value)
+                .Skip(skip)
+                .Take(max);
+            var count = items.LongCount();
+            return new PagedResultDto<OrderDto>(count, ObjectMapper.Map<List<Order>, List<OrderDto>>(items.ToList()));
         }
 
         public async Task<OrderDto> ProcessOrderAsync(CreateOrderProcessDto request)

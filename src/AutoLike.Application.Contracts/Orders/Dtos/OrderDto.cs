@@ -20,9 +20,10 @@ namespace AutoLike.Orders.Dtos
         public int CompletedQuantity { get; set; }
         public string Uid { get; set; }
         public string RequestUid { get; set; }
-        public ServiceDto Service { get; set; }
+        public ServiceBase Service { get; set; }
         public Warranty Warranty { set; get; }
         public Speed Speed { set; get; }
         public string[] Targets { get; set; }
+        public string ServiceCode { get; set; }
     }
 }
