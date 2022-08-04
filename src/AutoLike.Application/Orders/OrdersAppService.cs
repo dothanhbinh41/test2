@@ -11,9 +11,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp;
+using Volo.Abp.Application.Dtos;
 using Volo.Abp.BackgroundJobs;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Identity;
+using Volo.Abp.ObjectMapping;
 
 namespace AutoLike.Orders
 {
@@ -125,6 +127,18 @@ namespace AutoLike.Orders
                 session.CommitTransaction();
                 return ObjectMapper.Map<Order, OrderDto>(orderResult);
             }
+        }
+
+        public async Task<PagedResultDto<OrderDto>> GetOrdersAsync(string serviceCode, OrderStatus? status, int skip = 0, int max = 10)
+        {
+            var query = await orderRepository.GetQueryableAsync();
+            var items = query.Where(
+                d => d.User.Id == CurrentUser.Id.Value 
+                && d.Service.Code == serviceCode 
+                && (!status.HasValue || d.Status == status));
+            var total = items.Count();
+            var itemsPage = items.Skip(skip).Take(max).ToList();
+            return new PagedResultDto<OrderDto>(total, ObjectMapper.Map<List<Order>, List<OrderDto>>(itemsPage));
         }
 
         public async Task<OrderDto> ProcessOrderAsync(CreateOrderProcessDto request)
