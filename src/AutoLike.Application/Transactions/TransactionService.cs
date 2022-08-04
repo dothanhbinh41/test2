@@ -20,17 +20,18 @@ namespace AutoLike.Transactions
         Task TranferToUserAsync(UserBase user, decimal amount, ITransactionInformation info, TransactionType TransactionType, IClientSessionHandle session);
         Task TranferFromUserAsync(UserBase user, decimal amount, ITransactionInformation info, TransactionType TransactionType, IClientSessionHandle session);
     }
+
     public class TransactionService : ITransactionService
     {
         private readonly IRepository<Transaction, Guid> transactionRepository;
-        private readonly IRepository<IdentityUser, Guid> userRepository;
+        private readonly IdentityUserManager identityUserManager; 
 
         public TransactionService(
             IRepository<Transaction, Guid> transactionRepository,
-            IRepository<IdentityUser, Guid> userRepository)
+            IdentityUserManager identityUserManager)
         {
             this.transactionRepository = transactionRepository;
-            this.userRepository = userRepository;
+            this.identityUserManager = identityUserManager; 
         }
 
         public Task TranferFromUserAsync(UserBase user, decimal amount, ITransactionInformation info, TransactionType TransactionType, IClientSessionHandle session)
@@ -73,7 +74,7 @@ namespace AutoLike.Transactions
             }
 
             //find user
-            var user = await userRepository.FindAsync(d => d.Id == u.Id);
+            var user = await identityUserManager.GetByIdAsync(u.Id);
             if (user == null)
             {
                 session.AbortTransaction();
@@ -91,7 +92,7 @@ namespace AutoLike.Transactions
 
             //set balance
             user.SetBalance(currentBalance + amount);
-            var updated = await userRepository.UpdateAsync(user);
+            var updated = await identityUserManager.UpdateAsync(user);
         }
     }
 }

@@ -28,33 +28,26 @@ namespace AutoLike.Orders
         private readonly IMongoClient mongoClient;
         private readonly ITransactionService transactionService;
         private readonly IRepository<OrderProcess, Guid> orderProcessRepository;
-        private readonly IRepository<Order, Guid> orderRepository;
-        private readonly IRepository<Transaction, Guid> transactionRepository;
-        private readonly IRepository<Service, Guid> serviceRepository;
-        private readonly IRepository<IdentityUser, Guid> userRepository;
+        private readonly IRepository<Order, Guid> orderRepository; 
+        private readonly IRepository<Service, Guid> serviceRepository; 
 
         public OrdersAppService(
             IUidValidator uidValidator,
             ICodeGenerator codeGenerator,
-            IBackgroundJobManager backgroundJobManager,
-            IMongoClient mongoClient,
+            IBackgroundJobManager backgroundJobManager, 
             ITransactionService transactionService,
             IRepository<OrderProcess, Guid> orderProcessRepository,
-            IRepository<Order, Guid> orderRepository,
-            IRepository<Transaction, Guid> transactionRepository,
-            IRepository<Service, Guid> serviceRepository,
-            IRepository<IdentityUser, Guid> userRepository)
+            IRepository<Order, Guid> orderRepository, 
+            IRepository<Service, Guid> serviceRepository)
         {
             this.uidValidator = uidValidator;
             this.codeGenerator = codeGenerator;
-            this.backgroundJobManager = backgroundJobManager;
-            this.mongoClient = mongoClient;
+            this.backgroundJobManager = backgroundJobManager; 
             this.transactionService = transactionService;
             this.orderProcessRepository = orderProcessRepository;
-            this.orderRepository = orderRepository;
-            this.transactionRepository = transactionRepository;
+            this.orderRepository = orderRepository; 
             this.serviceRepository = serviceRepository;
-            this.userRepository = userRepository;
+            mongoClient = new MongoClient("mongodb://admin:fukSkNQngNpPG6e@62.112.8.24:27017/AutoLikeV8?authSource=admin");
         }
 
         public async Task<OrderDto> CancelAsync(Guid id)

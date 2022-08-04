@@ -7,9 +7,9 @@ using AutoLike.Orders;
 using AutoLike.Promotions;
 using AutoLike.Services;
 using AutoLike.Trackings;
+using AutoLike.Transactions;
 using AutoLike.Users;
-using MongoDB.Driver;
-using System.Transactions;
+using MongoDB.Driver; 
 using Volo.Abp.Data;
 using Volo.Abp.Identity;
 using Volo.Abp.MongoDB;
@@ -34,6 +34,7 @@ public class AutoLikeMongoDbContext : AbpMongoDbContext
     public IMongoCollection<Transaction> Transactions => Collection<Transaction>();
     public IMongoCollection<Tracking> Trackings => Collection<Tracking>();
     public IMongoCollection<UserActionLock> UserActionLocks => Collection<UserActionLock>();
+    public IMongoCollection<OrderProcess> OrderProcesses => Collection<OrderProcess>(); 
 
     protected override void CreateModel(IMongoModelBuilder modelBuilder)
     {
