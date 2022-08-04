@@ -202,8 +202,7 @@ public class AutoLikeHttpApiHostModule : AbpModule
                 //    .AllowAnyHeader()
                 //    .AllowAnyMethod();
                 //.AllowCredentials();
-
-                builder.SetIsOriginAllowed(_ => true);
+                 
                 builder
                     //.WithOrigins(
                     //    configuration["App:CorsOrigins"]
@@ -211,7 +210,7 @@ public class AutoLikeHttpApiHostModule : AbpModule
                     //        .Select(o => o.RemovePostFix("/"))
                     //        .ToArray()
                     //)
-
+                    .AllowCredentials()
                     .AllowAnyOrigin()
                     .WithAbpExposedHeaders()
                     .SetIsOriginAllowedToAllowWildcardSubdomains()
