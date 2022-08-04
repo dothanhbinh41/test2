@@ -13,6 +13,11 @@ namespace AutoLike.Orders
         Task<OrderDto> CreateAsync(CreateOrderDto order);
         Task<OrderDto> CancelAsync(Guid id);
         Task<OrderDto> ProcessOrderAsync(CreateOrderProcessDto request); 
-        Task<PagedResultDto<OrderDto>> GetOrdersAsync(string serviceCode, OrderStatus? status, int skip = 0, int max = 10);
+        Task<PagedResultDto<OrderDto>> GetOrdersAsync(string serviceCode,
+            OrderStatus? status,
+            DateTime? from,
+            DateTime? to,
+            int skip = 0,
+            int max = 10);
     }
 }

@@ -129,12 +129,20 @@ namespace AutoLike.Orders
             }
         }
 
-        public async Task<PagedResultDto<OrderDto>> GetOrdersAsync(string serviceCode, OrderStatus? status, int skip = 0, int max = 10)
+        public async Task<PagedResultDto<OrderDto>> GetOrdersAsync(
+            string serviceCode,
+            OrderStatus? status,
+            DateTime? from,
+            DateTime? to,
+            int skip = 0,
+            int max = 10)
         {
             var query = await orderRepository.GetQueryableAsync();
             var items = query.Where(
-                d => d.User.Id == CurrentUser.Id.Value 
-                && d.Service.Code == serviceCode 
+                d => d.User.Id == CurrentUser.Id.Value
+                && d.Service.Code == serviceCode
+                && (!from.HasValue || d.CreationTime >= from.Value)
+                && (!to.HasValue || d.CreationTime <= to.Value)
                 && (!status.HasValue || d.Status == status));
             var total = items.Count();
             var itemsPage = items.Skip(skip).Take(max).ToList();
