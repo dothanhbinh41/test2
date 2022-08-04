@@ -39,6 +39,7 @@ using System.Net;
 using Microsoft.Extensions.Configuration;
 using AutoLike.Options;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 
 namespace AutoLike;
 [DependsOn(
@@ -157,6 +158,7 @@ public class AutoLikeIdentityServerModule : AbpModule
 
         context.Services.AddCors(options =>
         {
+            CorsPolicyBuilder x;
             options.AddDefaultPolicy(builder =>
             { 
                 builder
@@ -168,7 +170,7 @@ public class AutoLikeIdentityServerModule : AbpModule
                     )
 
                     //.AllowAnyOrigin() 
-                    .AllowCredentials()
+                    .DisallowCredentials()
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .SetIsOriginAllowedToAllowWildcardSubdomains();
