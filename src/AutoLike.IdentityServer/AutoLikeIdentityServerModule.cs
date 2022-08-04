@@ -156,43 +156,25 @@ public class AutoLikeIdentityServerModule : AbpModule
             //var redis = ConnectionMultiplexer.Connect(configuration["Redis:Configuration"]);
             //dataProtectionBuilder.PersistKeysToStackExchangeRedis(redis, "AutoLike-Protection-Keys");
         }
-        context.Services.Configure<CorsOptions>(option =>
-        {
-            option.AddDefaultPolicy(builder =>
-            {
-                builder
-                    .WithOrigins(
-                        configuration["App:CorsOrigins"]
-                            .Split(",", StringSplitOptions.RemoveEmptyEntries)
-                            .Select(o => o.RemovePostFix("/"))
-                            .ToArray()
-                    )
 
-                    //.AllowAnyOrigin() 
-                    .DisallowCredentials()
-                    .AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .SetIsOriginAllowedToAllowWildcardSubdomains();
-            });
-        });
         context.Services.AddCors(options =>
         {
             
             options.AddDefaultPolicy(builder =>
-            { 
+            {
+                var str = "http://149.28.192.142:10002,http://localhost:3000,http://149.28.192.142:10003";
                 builder
                     .WithOrigins(
-                        configuration["App:CorsOrigins"]
+                        str
                             .Split(",", StringSplitOptions.RemoveEmptyEntries)
                             .Select(o => o.RemovePostFix("/"))
                             .ToArray()
                     )
-
-                    //.AllowAnyOrigin() 
-                    .DisallowCredentials()
+                    .AllowCredentials()
+                    .WithAbpExposedHeaders()
+                    .SetIsOriginAllowedToAllowWildcardSubdomains()
                     .AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .SetIsOriginAllowedToAllowWildcardSubdomains();
+                    .AllowAnyMethod();
             });
         });
 

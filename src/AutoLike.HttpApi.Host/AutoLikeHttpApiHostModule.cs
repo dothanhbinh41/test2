@@ -202,11 +202,11 @@ public class AutoLikeHttpApiHostModule : AbpModule
                 //    .AllowAnyHeader()
                 //    .AllowAnyMethod();
                 //.AllowCredentials();
-                 
+
+                var str = "http://localhost:3000,http://149.28.192.142:10001,http://149.28.192.142:10002,http://149.28.192.142:10003,http://149.28.192.142:10004";
                 builder
                     .WithOrigins(
-                        configuration["App:CorsOrigins"]
-                            .Split(",", StringSplitOptions.RemoveEmptyEntries)
+                        str.Split(",", StringSplitOptions.RemoveEmptyEntries)
                             .Select(o => o.RemovePostFix("/"))
                             .ToArray()
                     )
