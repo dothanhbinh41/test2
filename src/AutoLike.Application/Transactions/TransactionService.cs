@@ -12,7 +12,6 @@ using Volo.Abp.DependencyInjection;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Identity;
 using Volo.Abp.Uow;
-using static Volo.Abp.Identity.Settings.IdentitySettingNames;
 
 namespace AutoLike.Transactions
 {
@@ -21,22 +20,18 @@ namespace AutoLike.Transactions
         Task TranferToUserAsync(UserBase user, decimal amount, ITransactionInformation info, TransactionType TransactionType);
         Task TranferFromUserAsync(UserBase user, decimal amount, ITransactionInformation info, TransactionType TransactionType);
     }
-
-    [UnitOfWork]
+     
     public class TransactionService : ITransactionService
     {
         private readonly IRepository<Transaction, Guid> transactionRepository;
         private readonly IdentityUserManager identityUserManager;
-        private readonly IUnitOfWorkManager unitOfWorkManager;
 
         public TransactionService(
             IRepository<Transaction, Guid> transactionRepository,
-            IdentityUserManager identityUserManager,
-            IUnitOfWorkManager unitOfWorkManager)
+            IdentityUserManager identityUserManager)
         {
             this.transactionRepository = transactionRepository;
             this.identityUserManager = identityUserManager;
-            this.unitOfWorkManager = unitOfWorkManager;
         }
 
         public async Task TranferFromUserAsync(UserBase user, decimal amount, ITransactionInformation info, TransactionType TransactionType)
@@ -51,18 +46,17 @@ namespace AutoLike.Transactions
             await TranferAsync(user, amount, info, TransactionType);
         }
 
-        async Task EnsureAmountGreaterZero(decimal amount)
+        Task EnsureAmountGreaterZero(decimal amount)
         {
             if (amount < 0)
             {
-                await unitOfWorkManager.Current.RollbackAsync();
                 throw new UserFriendlyException("");
             }
+            return Task.CompletedTask;
         }
 
         public async Task TranferAsync(UserBase u, decimal amount, ITransactionInformation info, TransactionType TransactionType)
         {
-
             //make transaction
             var trans = await transactionRepository.InsertAsync(new Transaction
             {
@@ -74,7 +68,6 @@ namespace AutoLike.Transactions
 
             if (trans == null)
             {
-                await unitOfWorkManager.Current.RollbackAsync();
                 throw new UserFriendlyException("");
             }
 
@@ -82,7 +75,6 @@ namespace AutoLike.Transactions
             var user = await identityUserManager.GetByIdAsync(u.Id);
             if (user == null)
             {
-                await unitOfWorkManager.Current.RollbackAsync();
                 throw new UserFriendlyException("");
             }
 
@@ -91,7 +83,6 @@ namespace AutoLike.Transactions
             //add conditions : user balancy allway greater than zero
             if (amount <= 0 && currentBalance < Math.Abs(amount))
             {
-                await unitOfWorkManager.Current.RollbackAsync();
                 throw new UserFriendlyException("");
             }
 
