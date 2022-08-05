@@ -121,7 +121,7 @@ namespace AutoLike.Orders
                     throw new UserFriendlyException("");
                 }
 
-                await transactionService.TranferFromUserAsync(CurrentUser.ToBase(), request.Quantity, orderResult, TransactionType.Service, session);
+                await transactionService.TranferFromUserAsync(CurrentUser.ToBase(), request.Quantity, orderResult, TransactionType.Service);
                 session.CommitTransaction();
                 return ObjectMapper.Map<Order, OrderDto>(orderResult);
             }

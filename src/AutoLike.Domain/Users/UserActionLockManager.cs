@@ -26,9 +26,10 @@ namespace AutoLike.Users
             await repository.InsertAsync(new UserActionLock { UserId = uid, Action = action, Message = message });
         }
 
-        public Task<int> GetErrorCountAsync(Guid uid, UserActionLockAction action, DateTime fromTime)
+        public async Task<int> GetErrorCountAsync(Guid uid, UserActionLockAction action, DateTime fromTime)
         {
-            return repository.CountAsync(d => d.UserId == uid && action == d.Action && d.CreationTime.ToLocalTime() > fromTime.ToLocalTime());
+            var query = await repository.GetQueryableAsync();
+            return (int)query.LongCount(d => d.UserId == uid && action == d.Action && d.CreationTime > fromTime);
         }
     }
 }

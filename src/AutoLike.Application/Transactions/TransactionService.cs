@@ -11,51 +11,56 @@ using Volo.Abp;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Identity;
+using Volo.Abp.Uow;
 using static Volo.Abp.Identity.Settings.IdentitySettingNames;
 
 namespace AutoLike.Transactions
 {
     public interface ITransactionService : ITransientDependency
     {
-        Task TranferToUserAsync(UserBase user, decimal amount, ITransactionInformation info, TransactionType TransactionType, IClientSessionHandle session);
-        Task TranferFromUserAsync(UserBase user, decimal amount, ITransactionInformation info, TransactionType TransactionType, IClientSessionHandle session);
+        Task TranferToUserAsync(UserBase user, decimal amount, ITransactionInformation info, TransactionType TransactionType);
+        Task TranferFromUserAsync(UserBase user, decimal amount, ITransactionInformation info, TransactionType TransactionType);
     }
 
+    [UnitOfWork]
     public class TransactionService : ITransactionService
     {
         private readonly IRepository<Transaction, Guid> transactionRepository;
-        private readonly IdentityUserManager identityUserManager; 
+        private readonly IdentityUserManager identityUserManager;
+        private readonly IUnitOfWorkManager unitOfWorkManager;
 
         public TransactionService(
             IRepository<Transaction, Guid> transactionRepository,
-            IdentityUserManager identityUserManager)
+            IdentityUserManager identityUserManager,
+            IUnitOfWorkManager unitOfWorkManager)
         {
             this.transactionRepository = transactionRepository;
-            this.identityUserManager = identityUserManager; 
+            this.identityUserManager = identityUserManager;
+            this.unitOfWorkManager = unitOfWorkManager;
         }
 
-        public Task TranferFromUserAsync(UserBase user, decimal amount, ITransactionInformation info, TransactionType TransactionType, IClientSessionHandle session)
+        public async Task TranferFromUserAsync(UserBase user, decimal amount, ITransactionInformation info, TransactionType TransactionType)
         {
-            EnsureAmountGreaterZero(amount, session);
-            return TranferAsync(user, -amount, info, TransactionType, session);
+            await EnsureAmountGreaterZero(amount);
+            await TranferAsync(user, -amount, info, TransactionType);
         }
 
-        public Task TranferToUserAsync(UserBase user, decimal amount, ITransactionInformation info, TransactionType TransactionType, IClientSessionHandle session)
+        public async Task TranferToUserAsync(UserBase user, decimal amount, ITransactionInformation info, TransactionType TransactionType)
         {
-            EnsureAmountGreaterZero(amount, session);
-            return TranferAsync(user, amount, info, TransactionType, session);
+            await EnsureAmountGreaterZero(amount);
+            await TranferAsync(user, amount, info, TransactionType);
         }
 
-        void EnsureAmountGreaterZero(decimal amount, IClientSessionHandle session)
+        async Task EnsureAmountGreaterZero(decimal amount)
         {
             if (amount < 0)
             {
-                session.AbortTransaction();
+                await unitOfWorkManager.Current.RollbackAsync();
                 throw new UserFriendlyException("");
             }
         }
 
-        public async Task TranferAsync(UserBase u, decimal amount, ITransactionInformation info, TransactionType TransactionType, IClientSessionHandle session)
+        public async Task TranferAsync(UserBase u, decimal amount, ITransactionInformation info, TransactionType TransactionType)
         {
 
             //make transaction
@@ -69,7 +74,7 @@ namespace AutoLike.Transactions
 
             if (trans == null)
             {
-                session.AbortTransaction();
+                await unitOfWorkManager.Current.RollbackAsync();
                 throw new UserFriendlyException("");
             }
 
@@ -77,7 +82,7 @@ namespace AutoLike.Transactions
             var user = await identityUserManager.GetByIdAsync(u.Id);
             if (user == null)
             {
-                session.AbortTransaction();
+                await unitOfWorkManager.Current.RollbackAsync();
                 throw new UserFriendlyException("");
             }
 
@@ -86,7 +91,7 @@ namespace AutoLike.Transactions
             //add conditions : user balancy allway greater than zero
             if (amount <= 0 && currentBalance < Math.Abs(amount))
             {
-                session.AbortTransaction();
+                await unitOfWorkManager.Current.RollbackAsync();
                 throw new UserFriendlyException("");
             }
 

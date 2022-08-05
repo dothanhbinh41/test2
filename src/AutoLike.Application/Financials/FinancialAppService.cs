@@ -17,6 +17,7 @@ using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Identity;
+using Volo.Abp.Uow;
 
 namespace AutoLike.Financials
 {
@@ -30,7 +31,6 @@ namespace AutoLike.Financials
         private readonly IRepository<IdentityUser, Guid> userRepository;
         private readonly ITransactionService transactionService;
         private readonly ICodeGenerator codeGenerator;
-        private readonly IMongoClient mongoClient;
         private readonly AppSetting appSetting;
         public FinancialAppService(
             IUserActionLockManager userActionLockManager,
@@ -40,8 +40,7 @@ namespace AutoLike.Financials
             IRepository<Transaction, Guid> transactionRepository,
             IRepository<IdentityUser, Guid> userRepository,
             ITransactionService transactionService,
-            ICodeGenerator codeGenerator,
-            IMongoClient mongoClient)
+            ICodeGenerator codeGenerator)
         {
             this.userActionLockManager = userActionLockManager;
             this.promotionRepository = promotionRepository;
@@ -50,28 +49,28 @@ namespace AutoLike.Financials
             this.userRepository = userRepository;
             this.transactionService = transactionService;
             this.codeGenerator = codeGenerator;
-            this.mongoClient = mongoClient;
             this.appSetting = options.Value;
         }
 
         [Authorize(AutoLikePermissions.ConfirmFinancialPermission)]
+        [UnitOfWork]
         public async Task<FinancialDto> ConfirmDepositAsync(Guid id)
         {
             var financialCollection = await financialRepository.GetCollectionAsync();
             var transactionCollection = await transactionRepository.GetCollectionAsync();
-            using (var session = await mongoClient.StartSessionAsync())
-            {
-                session.StartTransaction();
+             
+            using (var uow = UnitOfWorkManager.Begin(new Volo.Abp.Uow.AbpUnitOfWorkOptions { IsTransactional = true }))
+            { 
                 var update = Builders<Financial>.Update.Set(d => d.Status, FinancialStatus.Complete);
                 var fin = await financialCollection.FindOneAndUpdateAsync(d => d.Id == id && d.Status == FinancialStatus.Pending, update);
                 if (fin == null)
                 {
-                    session.AbortTransaction();
+                    await uow.RollbackAsync();
                     throw new UserFriendlyException("");
                 }
 
-                await transactionService.TranferToUserAsync(fin.User, fin.Amount + CalculateBonus(fin), fin, TransactionType.Deposit, session);
-                session.CommitTransaction();
+                await transactionService.TranferToUserAsync(fin.User, fin.Amount + CalculateBonus(fin), fin, TransactionType.Deposit);
+                await uow.SaveChangesAsync();
                 return ObjectMapper.Map<Financial, FinancialDto>(fin);
             }
         }

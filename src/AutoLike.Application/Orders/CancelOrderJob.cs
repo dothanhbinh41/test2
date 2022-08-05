@@ -48,7 +48,7 @@ namespace AutoLike.Orders
             using (var session = mongoClient.StartSession())
             {
                 session.StartTransaction();
-                await transactionService.TranferToUserAsync(order.User, refund, order, TransactionType.Refund, session);
+                await transactionService.TranferToUserAsync(order.User, refund, order, TransactionType.Refund);
                 order.Status = OrderStatus.InActive;
                 await orderRepository.UpdateAsync(order);
                 session.CommitTransaction();
