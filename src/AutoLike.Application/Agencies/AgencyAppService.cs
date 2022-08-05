@@ -37,7 +37,7 @@ namespace AutoLike.Agencies
             var agency = await Repository.FindAsync(d => d.UserId == CurrentUser.Id.Value);
             if (agency == null)
             {
-                throw new Volo.Abp.UserFriendlyException("");
+                throw new Volo.Abp.UserFriendlyException("Bạn chưa đăng ký Agency");
             }
 
             var key = await agencyKeyRepository.FindAsync(d => d.AgencyId == agency.Id);
@@ -53,7 +53,7 @@ namespace AutoLike.Agencies
             var exist = await Repository.FindAsync(d => d.UserId == CurrentUser.Id.Value);
             if (exist == null)
             {
-                throw new Volo.Abp.UserFriendlyException("");
+                throw new Volo.Abp.UserFriendlyException("Bạn chưa đăng ký Agency");
             }
 
             return ObjectMapper.Map<Agency, AgencyDetailDto>(exist);
@@ -78,7 +78,7 @@ namespace AutoLike.Agencies
             var exist = await Repository.FindAsync(d => d.UserId == input.UserId);
             if (exist != null)
             {
-                throw new Volo.Abp.UserFriendlyException("");
+                throw new Volo.Abp.UserFriendlyException("Đã tồn tại Agency");
             }
             var entity = ObjectMapper.Map<CreateAgencyDto, Agency>(input);
             await Task.WhenAll(Repository.InsertAsync(entity), agencyKeyRepository.InsertAsync(new AgencyKey { AgencyId = entity.Id }));
