@@ -23,5 +23,6 @@ namespace AutoLike.Users.Dtos
         public bool HasPassword { get; set; }
 
         public string ConcurrencyStamp { get; set; }
+        public decimal Balance { get; set; }
     }
 }

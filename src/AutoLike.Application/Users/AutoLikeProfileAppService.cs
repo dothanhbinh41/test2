@@ -45,8 +45,11 @@ namespace AutoLike.Users
 
         public async Task<ProfileDto> GetAsync()
         {
-            var currentUser = await userManager.GetByIdAsync(CurrentUser.GetId()); 
-            return ObjectMapper.Map<IdentityUser, ProfileDto>(currentUser);
+            var currentUser = await userManager.GetByIdAsync(CurrentUser.GetId());
+            var balance = currentUser.GetBalance();
+            var result = ObjectMapper.Map<IdentityUser, ProfileDto>(currentUser);
+            result.Balance = balance;
+            return result;
         }
 
         public virtual async Task<ProfileDto> UpdateAsync(UpdateProfileDto input)
