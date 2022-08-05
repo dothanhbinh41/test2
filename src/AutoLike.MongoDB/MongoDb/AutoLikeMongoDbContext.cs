@@ -30,6 +30,7 @@ public class AutoLikeMongoDbContext : AbpMongoDbContext
     public IMongoCollection<Comment> Comments => Collection<Comment>();
     public IMongoCollection<QRCode> QRCodes => Collection<QRCode>();
     public IMongoCollection<Agency> Agencies => Collection<Agency>();
+    public IMongoCollection<AgencyKey> AgencyKeys => Collection<AgencyKey>();
     public IMongoCollection<Order> Orders => Collection<Order>();
     public IMongoCollection<Transaction> Transactions => Collection<Transaction>();
     public IMongoCollection<Tracking> Trackings => Collection<Tracking>();
