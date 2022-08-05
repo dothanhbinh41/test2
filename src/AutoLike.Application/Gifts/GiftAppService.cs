@@ -54,7 +54,7 @@ namespace AutoLike.Gifts
             var used = await userGiftCodeRepository.AnyAsync(d => d.GiftCodeId == id);
             if (used)
             {
-                throw new UserFriendlyException("", "400");
+                throw new UserFriendlyException("Gift has been used");
             }
             await base.DeleteAsync(id);
         }

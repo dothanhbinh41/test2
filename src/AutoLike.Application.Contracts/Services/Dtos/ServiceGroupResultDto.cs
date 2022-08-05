@@ -7,6 +7,6 @@ namespace AutoLike.Services.Dtos
     public class ServiceGroupResultDto
     {
         public ServiceGroup Group { get; set; }
-        public ServiceDto[] Services { get; set; }
+        public ServiceMenuDto[] Services { get; set; }
     }
 }

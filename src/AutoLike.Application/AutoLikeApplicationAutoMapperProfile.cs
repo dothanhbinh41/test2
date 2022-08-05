@@ -39,6 +39,7 @@ public class AutoLikeApplicationAutoMapperProfile : Profile
         CreateMap<CreateServiceDto, Service>(); 
         CreateMap<ServiceDto, Service>(); 
         CreateMap<Service, ServiceDto>();         
+        CreateMap<Service, ServiceMenuDto>();         
         
         CreateMap<CreateOrderDto, Order>(); 
         CreateMap<OrderDto, Order>(); 

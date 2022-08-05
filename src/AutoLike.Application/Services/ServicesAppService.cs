@@ -83,7 +83,7 @@ namespace AutoLike.Services
                     var query = await Repository.GetQueryableAsync();
                     return query
                        .GroupBy(d => d.Group)
-                       .Select(d => new ServiceGroupResultDto { Group = d.Key, Services = ObjectMapper.Map<Service[], ServiceDto[]>(d.ToArray()) })
+                       .Select(d => new ServiceGroupResultDto { Group = d.Key, Services = ObjectMapper.Map<Service[], ServiceMenuDto[]>(d.ToArray()) })
                        .ToArray();
                 },
                 () => new Microsoft.Extensions.Caching.Distributed.DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = AutoLikeCaching.TimeExpried });

@@ -50,7 +50,7 @@ namespace AutoLike.Transactions
         {
             if (amount < 0)
             {
-                throw new UserFriendlyException("");
+                throw new UserFriendlyException("Amount less than zero");
             }
             return Task.CompletedTask;
         }
@@ -68,14 +68,14 @@ namespace AutoLike.Transactions
 
             if (trans == null)
             {
-                throw new UserFriendlyException("");
+                throw new UserFriendlyException("Transaction error");
             }
 
             //find user
             var user = await identityUserManager.GetByIdAsync(u.Id);
             if (user == null)
             {
-                throw new UserFriendlyException("");
+                throw new UserFriendlyException("User not found");
             }
 
             var currentBalance = user.GetBalance();
@@ -83,7 +83,7 @@ namespace AutoLike.Transactions
             //add conditions : user balancy allway greater than zero
             if (amount <= 0 && currentBalance < Math.Abs(amount))
             {
-                throw new UserFriendlyException("");
+                throw new UserFriendlyException("balance not enough");
             }
 
             //set balance
