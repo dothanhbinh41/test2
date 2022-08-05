@@ -22,17 +22,14 @@ namespace AutoLike.Agencies
         static TimeSpan TimeRefresh = TimeSpan.FromHours(8);
         private readonly IRepository<AgencyKey, Guid> agencyKeyRepository;
         private readonly IGuidGenerator guidGenerator;
-        private readonly IMongoClient mongoClient;
 
         public AgencyAppService(
             IRepository<Agency, Guid> repository,
             IRepository<AgencyKey, Guid> agencyKeyRepository,
-            IGuidGenerator guidGenerator,
-            IMongoClient mongoClient) : base(repository)
+            IGuidGenerator guidGenerator) : base(repository)
         {
             this.agencyKeyRepository = agencyKeyRepository;
             this.guidGenerator = guidGenerator;
-            this.mongoClient = mongoClient;
         }
 
         public async Task<Guid> GetAgencyKeyAsync()
@@ -71,12 +68,7 @@ namespace AutoLike.Agencies
             }
             var input = ObjectMapper.Map<RegisterAgencyDto, Agency>(request);
             input.UserId = CurrentUser.Id.Value;
-            using (var session = mongoClient.StartSession())
-            {
-                session.StartTransaction();
-                await Task.WhenAll(Repository.InsertAsync(input), agencyKeyRepository.InsertAsync(new AgencyKey { AgencyId = input.Id }));
-                session.CommitTransaction();
-            }
+            await Task.WhenAll(Repository.InsertAsync(input), agencyKeyRepository.InsertAsync(new AgencyKey { AgencyId = input.Id }));
             return ObjectMapper.Map<Agency, AgencyDto>(input);
         }
 
@@ -89,12 +81,7 @@ namespace AutoLike.Agencies
                 throw new Volo.Abp.UserFriendlyException("");
             }
             var entity = ObjectMapper.Map<CreateAgencyDto, Agency>(input);
-            using (var session = mongoClient.StartSession())
-            {
-                session.StartTransaction();
-                await Task.WhenAll(Repository.InsertAsync(entity), agencyKeyRepository.InsertAsync(new AgencyKey { AgencyId = entity.Id }));
-                session.CommitTransaction();
-            }
+            await Task.WhenAll(Repository.InsertAsync(entity), agencyKeyRepository.InsertAsync(new AgencyKey { AgencyId = entity.Id }));
             return ObjectMapper.Map<Agency, AgencyDto>(entity);
         }
 
