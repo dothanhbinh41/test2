@@ -75,14 +75,16 @@ namespace AutoLike.Services
             return base.GetListAsync(input);
         }
 
-        public Task<ServiceGroupResultDto[]> GetAllServiceGroupsAsync()
+        public async Task<ServiceGroupResultDto[]> GetAllServiceGroupsAsync()
         {
-            return serviceGroupCache.GetOrAddAsync($"{AutoLikeCaching.ServiceCacheGroup}:{AutoLikeCaching.AllServiceGroup}",
+            await serviceGroupCache.RemoveAsync($"{AutoLikeCaching.ServiceCacheGroup}:{AutoLikeCaching.AllServiceGroup}");
+            return await serviceGroupCache.GetOrAddAsync($"{AutoLikeCaching.ServiceCacheGroup}:{AutoLikeCaching.AllServiceGroup}",
                 async () =>
                 {
                     var query = await Repository.GetQueryableAsync();
                     return query
                        .GroupBy(d => d.Group)
+                       .ToList()
                        .Select(d => new ServiceGroupResultDto { Group = d.Key, Services = ObjectMapper.Map<Service[], ServiceMenuDto[]>(d.ToArray()) })
                        .ToArray();
                 },
