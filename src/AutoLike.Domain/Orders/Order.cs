@@ -10,6 +10,14 @@ namespace AutoLike.Orders
 {
     public class Order : FullAuditedAggregateRoot<Guid>, ITransactionInformation
     {
+        public Order()
+        {
+
+        }
+        public Order(Guid id):base(id)
+        {
+
+        }
         public string Code { get; set; }
         public UserBase User { get; set; }
         public OrderStatus Status { set; get; }

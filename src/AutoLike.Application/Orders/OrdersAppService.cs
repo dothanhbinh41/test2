@@ -17,6 +17,7 @@ using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.BackgroundJobs;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Guids;
 using Volo.Abp.Identity;
 using Volo.Abp.ObjectMapping;
 
@@ -26,6 +27,7 @@ namespace AutoLike.Orders
     public class OrdersAppService : AutoLikeAppService, IOrdersAppService
     {
         public const double CancelTime = 15;//mins
+        private readonly IGuidGenerator guidGenerator;
         private readonly IUidValidator uidValidator;
         private readonly ICodeGenerator codeGenerator;
         private readonly IBackgroundJobManager backgroundJobManager;
@@ -36,6 +38,7 @@ namespace AutoLike.Orders
         private readonly IRepository<Service, Guid> serviceRepository;
 
         public OrdersAppService(
+            IGuidGenerator guidGenerator,
             IUidValidator uidValidator,
             ICodeGenerator codeGenerator,
             IBackgroundJobManager backgroundJobManager,
@@ -44,6 +47,7 @@ namespace AutoLike.Orders
             IRepository<Order, Guid> orderRepository,
             IRepository<Service, Guid> serviceRepository)
         {
+            this.guidGenerator = guidGenerator;
             this.uidValidator = uidValidator;
             this.codeGenerator = codeGenerator;
             this.backgroundJobManager = backgroundJobManager;
@@ -97,7 +101,7 @@ namespace AutoLike.Orders
             }
 
 
-            var order = new Order
+            var order = new Order(guidGenerator.Create())
             {
                 ServiceCode = service.Code,
                 User = CurrentUser.ToBase(),
