@@ -15,6 +15,7 @@ using Volo.Abp.Caching;
 using AutoLike.Caching;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using System.Collections;
 
 namespace AutoLike.Services
 {
@@ -77,16 +78,15 @@ namespace AutoLike.Services
 
         public async Task<ServiceGroupResultDto[]> GetAllServiceGroupsAsync()
         {
-            await serviceGroupCache.RemoveAsync($"{AutoLikeCaching.ServiceCacheGroup}:{AutoLikeCaching.AllServiceGroup}");
+            await serviceGroupCache.RemoveAsync($"{AutoLikeCaching.ServiceCacheGroup}:{AutoLikeCaching.AllServiceGroup}"); 
             return await serviceGroupCache.GetOrAddAsync($"{AutoLikeCaching.ServiceCacheGroup}:{AutoLikeCaching.AllServiceGroup}",
                 async () =>
                 {
-                    var query = await Repository.GetQueryableAsync();
+                    var query = await Repository.GetListAsync();
                     return query
-                       .GroupBy(d => d.Group)
-                       .ToList()
-                       .Select(d => new ServiceGroupResultDto { Group = d.Key, Services = ObjectMapper.Map<Service[], ServiceMenuDto[]>(d.ToArray()) })
-                       .ToArray();
+                              .GroupBy(d => d.Group)
+                              .Select(d => new ServiceGroupResultDto { Group = d.Key, Services = ObjectMapper.Map<Service[], ServiceMenuDto[]>(d.ToArray()) })
+                              .ToArray();
                 },
                 () => new Microsoft.Extensions.Caching.Distributed.DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = AutoLikeCaching.TimeExpried });
         }
