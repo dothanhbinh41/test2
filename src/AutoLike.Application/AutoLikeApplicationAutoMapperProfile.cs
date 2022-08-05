@@ -46,5 +46,10 @@ public class AutoLikeApplicationAutoMapperProfile : Profile
         CreateMap<AgencyDto, Agency>();
         CreateMap<Agency, AgencyDto>();
         CreateMap<Service, ServiceBase>();
+
+        CreateMap<IdentityUser, ProfileDto>()
+           .ForMember(dest => dest.HasPassword,
+               op => op.MapFrom(src => src.PasswordHash != null))
+           .MapExtraProperties();
     }
 }
