@@ -13,6 +13,14 @@ namespace AutoLike.Financials
 {
     public class Financial : FullAuditedAggregateRoot<Guid>, ITransactionInformation
     {
+        public Financial()
+        {
+
+        }
+        public Financial(Guid id) : base(id)
+        {
+
+        }
         public string Code { get; set; }
         public UserBase User { get; set; }
         public decimal Amount { get; set; }

@@ -12,6 +12,8 @@ using AutoLike.Orders.Dtos;
 using AutoLike.Orders;
 using AutoLike.Agencies.Dtos;
 using AutoLike.Agencies;
+using AutoLike.Financials.Dtos;
+using AutoLike.Financials;
 
 namespace AutoLike;
 
@@ -46,6 +48,8 @@ public class AutoLikeApplicationAutoMapperProfile : Profile
         CreateMap<AgencyDto, Agency>();
         CreateMap<Agency, AgencyDto>();
         CreateMap<Service, ServiceBase>();
+        CreateMap<DepositRequestDto, Financial>();
+        CreateMap<Financial, FinancialDto>();
 
         CreateMap<IdentityUser, ProfileDto>()
            .ForMember(dest => dest.HasPassword,

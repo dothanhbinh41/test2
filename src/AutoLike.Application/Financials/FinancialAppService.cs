@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Guids;
 using Volo.Abp.Identity;
 using Volo.Abp.Uow;
 
@@ -31,6 +32,7 @@ namespace AutoLike.Financials
         private readonly IRepository<IdentityUser, Guid> userRepository;
         private readonly ITransactionService transactionService;
         private readonly ICodeGenerator codeGenerator;
+        private readonly IGuidGenerator guidGenerator;
         private readonly AppSetting appSetting;
         public FinancialAppService(
             IUserActionLockManager userActionLockManager,
@@ -40,7 +42,8 @@ namespace AutoLike.Financials
             IRepository<Transaction, Guid> transactionRepository,
             IRepository<IdentityUser, Guid> userRepository,
             ITransactionService transactionService,
-            ICodeGenerator codeGenerator)
+            ICodeGenerator codeGenerator,
+            IGuidGenerator guidGenerator)
         {
             this.userActionLockManager = userActionLockManager;
             this.promotionRepository = promotionRepository;
@@ -49,6 +52,7 @@ namespace AutoLike.Financials
             this.userRepository = userRepository;
             this.transactionService = transactionService;
             this.codeGenerator = codeGenerator;
+            this.guidGenerator = guidGenerator;
             this.appSetting = options.Value;
         }
 
@@ -95,9 +99,8 @@ namespace AutoLike.Financials
                 throw new UserFriendlyException("Amount negative");
             }
             //check last request
-            var lastDeposit = (await financialRepository.GetQueryableAsync())
-                .OrderBy(d => d.CreationTime)
-                .LastOrDefault(d => d.CreatorId == CurrentUser.Id.Value);
+            var lastDeposit = (await financialRepository.GetQueryableAsync()) 
+                .Where(d => d.CreatorId == CurrentUser.Id.Value).ToList().LastOrDefault();
             if (lastDeposit != null && DateTime.UtcNow.Subtract(lastDeposit.CreationTime.ToUniversalTime()) < TimeSpan.FromMinutes(appSetting.TimeDeposit))
             {
                 await userActionLockManager.AddErrorAsync(CurrentUser.Id.Value, UserActionLockAction.Deposit, "Deposit too fast");
@@ -113,12 +116,13 @@ namespace AutoLike.Financials
 
             //find promotion
             var promotion = await promotionRepository.FindAsync(d => d.IsActived && request.Amount >= d.Begin && request.Amount <= d.End);
-            var fin = ObjectMapper.Map<DepositRequestDto, Financial>(request);
+            var fin = new Financial(guidGenerator.Create()) { Amount = request.Amount};
             if (promotion != null)
             {
                 fin.Promotion = promotion;
             }
-            fin.Bonus = CalculateBonus(fin);
+            fin.User = CurrentUser.ToBase();
+            fin.Bonus = CalculateBonus(fin); 
             fin.Code = codeGenerator.Generate(fin.Id, GenerateCode.Financial);
             var obj = await financialRepository.InsertAsync(fin);
             return ObjectMapper.Map<Financial, FinancialDto>(obj);
@@ -147,7 +151,7 @@ namespace AutoLike.Financials
         public async Task<PagedResultDto<FinancialDto>> GetFinancialsByUserAsync(PagedResultRequestDto request)
         {
             var queryable = await financialRepository.GetQueryableAsync();
-            var result = queryable.Where(d => d.Id == CurrentUser.Id.Value);
+            var result = queryable.Where(d => d.User.Id == CurrentUser.Id.Value);
             var count = result.Count();
             var items = result.PageBy(request.SkipCount, request.MaxResultCount).ToList();
             return new PagedResultDto<FinancialDto>(count, ObjectMapper.Map<List<Financial>, List<FinancialDto>>(items));
