@@ -52,6 +52,7 @@ public class AutoLikeApplicationAutoMapperProfile : Profile
         CreateMap<DepositRequestDto, Financial>();
         CreateMap<Financial, FinancialDto>();
         CreateMap<RegisterAgencyDto, Agency>();
+        CreateMap<Agency, AgencyDetailDto>();
 
         CreateMap<IdentityUser, ProfileDto>()
            .ForMember(dest => dest.HasPassword,
