@@ -18,6 +18,7 @@ using IdentityUser = Volo.Abp.Identity.IdentityUser;
 
 namespace AutoLike.Users
 {
+    [Authorize]
     public class ProfileAppService : ApplicationService, IAutoLikeProfileAppService
     {
         public const double QRCodeExpiredTime = 10;//mins
@@ -35,8 +36,7 @@ namespace AutoLike.Users
             this.userManager = userManager;
             this.identityOptions = identityOptions;
         }
-         
-        [Authorize]
+          
         public async Task<QRCodeDto> GenerateQrcodeAsync()
         {
             var qr = await repository.InsertAsync(new QRCode { ExpiredTime = DateTime.Now.AddMinutes(QRCodeExpiredTime) });
