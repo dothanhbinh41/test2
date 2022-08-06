@@ -11,7 +11,7 @@ namespace AutoLike.Agencies
     public interface IAgencyAppService : ICrudAppService<AgencyDto, Guid, PagedResultRequestDto, CreateAgencyDto, UpdateAgencyDto>
     {
         Task<AgencyDto> RegisterAgency(RegisterAgencyDto request);
-        Task<Guid> GetAgencyKeyAsync();
+        Task<AgencyDto> ChangeAgencyKeyAsync();
         Task<AgencyDetailDto> GetUserAgencyAsync();
     }
 }

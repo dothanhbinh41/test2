@@ -13,6 +13,7 @@ using AutoLike.Permissions;
 using Microsoft.AspNetCore.Authorization;
 using MongoDB.Driver;
 using Volo.Abp.Guids;
+using Volo.Abp.Uow;
 
 namespace AutoLike.Agencies
 {
@@ -32,20 +33,26 @@ namespace AutoLike.Agencies
             this.guidGenerator = guidGenerator;
         }
 
-        public async Task<Guid> GetAgencyKeyAsync()
+        [UnitOfWork]
+        public async Task<AgencyDto> ChangeAgencyKeyAsync()
         {
             var agency = await Repository.FindAsync(d => d.UserId == CurrentUser.Id.Value);
             if (agency == null)
             {
-                throw new Volo.Abp.UserFriendlyException("Bạn chưa đăng ký Agency");
+                throw new Volo.Abp.UserFriendlyException("You have to register to get information");
             }
 
             var key = await agencyKeyRepository.FindAsync(d => d.AgencyId == agency.Id);
-            if (key == null)
+            if (key == null || key.CreationTime.ToLocalTime().Subtract(DateTime.Now.ToLocalTime()) < TimeSpan.FromHours(1))
             {
-                key = await agencyKeyRepository.InsertAsync(new AgencyKey { AgencyId = agency.Id });
+                throw new Volo.Abp.UserFriendlyException("You change key to fast");
             }
-            return key.Id;
+            await agencyKeyRepository.DeleteAsync(key);
+            key = await agencyKeyRepository.InsertAsync(new AgencyKey { AgencyId = agency.Id });
+            agency.AgencyKey = key.Id;
+            await Repository.UpdateAsync(agency);
+            await UnitOfWorkManager.Current.SaveChangesAsync();
+            return ObjectMapper.Map<Agency, AgencyDto>(agency);
         }
 
         public async Task<AgencyDetailDto> GetUserAgencyAsync()
@@ -53,23 +60,28 @@ namespace AutoLike.Agencies
             var exist = await Repository.FindAsync(d => d.UserId == CurrentUser.Id.Value);
             if (exist == null)
             {
-                throw new Volo.Abp.UserFriendlyException("Bạn chưa đăng ký Agency");
+                throw new Volo.Abp.UserFriendlyException("You have to register to get information");
             }
 
             return ObjectMapper.Map<Agency, AgencyDetailDto>(exist);
         }
 
+        [UnitOfWork]
         public async Task<AgencyDto> RegisterAgency(RegisterAgencyDto request)
         {
             var exist = await Repository.FindAsync(d => d.UserId == CurrentUser.Id.Value);
             if (exist != null)
             {
-                throw new Volo.Abp.UserFriendlyException("");
+                throw new Volo.Abp.UserFriendlyException("You have been registed");
             }
             var input = ObjectMapper.Map<RegisterAgencyDto, Agency>(request);
             input.UserId = CurrentUser.Id.Value;
-            await Task.WhenAll(Repository.InsertAsync(input), agencyKeyRepository.InsertAsync(new AgencyKey { AgencyId = input.Id }));
-            return ObjectMapper.Map<Agency, AgencyDto>(input);
+            var agencyKey = guidGenerator.Create();
+            input.AgencyKey = agencyKey;
+            var agency = await Repository.InsertAsync(input);
+            await agencyKeyRepository.InsertAsync(new AgencyKey(agencyKey) { AgencyId = agency.Id });
+            await UnitOfWorkManager.Current.SaveChangesAsync();
+            return ObjectMapper.Map<Agency, AgencyDto>(agency);
         }
 
         [Authorize(AutoLikePermissions.CreateAgencyPermission)]
@@ -78,7 +90,7 @@ namespace AutoLike.Agencies
             var exist = await Repository.FindAsync(d => d.UserId == input.UserId);
             if (exist != null)
             {
-                throw new Volo.Abp.UserFriendlyException("Đã tồn tại Agency");
+                throw new Volo.Abp.UserFriendlyException("Agency have been created");
             }
             var entity = ObjectMapper.Map<CreateAgencyDto, Agency>(input);
             await Task.WhenAll(Repository.InsertAsync(entity), agencyKeyRepository.InsertAsync(new AgencyKey { AgencyId = entity.Id }));
@@ -107,6 +119,6 @@ namespace AutoLike.Agencies
         public override Task<PagedResultDto<AgencyDto>> GetListAsync(PagedResultRequestDto input)
         {
             return base.GetListAsync(input);
-        } 
+        }
     }
 }
