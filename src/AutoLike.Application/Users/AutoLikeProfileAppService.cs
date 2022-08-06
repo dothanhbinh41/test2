@@ -1,8 +1,10 @@
 ﻿using AutoLike.IdentityServer;
+using AutoLike.Services;
 using AutoLike.Users.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
+using QRCoder;
 using System;
 using System.Threading.Tasks;
 using Volo.Abp;
@@ -26,21 +28,26 @@ namespace AutoLike.Users
         private readonly IRepository<QRCode, Guid> repository;
         private readonly IdentityUserManager userManager;
         private readonly IOptions<IdentityOptions> identityOptions;
+        private readonly IQrCodeGenerator qrCodeGenerator;
 
         public ProfileAppService(
-            IRepository<QRCode, Guid> repository, 
+            IRepository<QRCode, Guid> repository,
             IdentityUserManager userManager,
-            IOptions<IdentityOptions> identityOptions)  
+            IOptions<IdentityOptions> identityOptions,
+            IQrCodeGenerator qrCodeGenerator)
         {
             this.repository = repository;
             this.userManager = userManager;
             this.identityOptions = identityOptions;
+            this.qrCodeGenerator = qrCodeGenerator;
         }
-          
+
         public async Task<QRCodeDto> GenerateQrcodeAsync()
         {
             var qr = await repository.InsertAsync(new QRCode { ExpiredTime = DateTime.Now.AddMinutes(QRCodeExpiredTime) });
-            return ObjectMapper.Map<QRCode, QRCodeDto>(qr);
+            var obj = ObjectMapper.Map<QRCode, QRCodeDto>(qr);
+            obj.Base64Image = qrCodeGenerator.Generate(obj.Id.ToString());
+            return obj;
         }
 
         public async Task<ProfileDto> GetAsync()
@@ -49,6 +56,7 @@ namespace AutoLike.Users
             var balance = currentUser.GetBalance();
             var result = ObjectMapper.Map<IdentityUser, ProfileDto>(currentUser);
             result.Balance = balance;
+            result.QRCode = await GenerateQrcodeAsync();
             return result;
         }
 

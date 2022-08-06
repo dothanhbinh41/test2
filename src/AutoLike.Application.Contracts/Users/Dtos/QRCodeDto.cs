@@ -8,5 +8,6 @@ namespace AutoLike.Users.Dtos
     public class QRCodeDto : EntityDto<Guid>
     {
         public DateTime ExpiredTime { get; set; }
+        public string Base64Image { get; set; }
     }
 }

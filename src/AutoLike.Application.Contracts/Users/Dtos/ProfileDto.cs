@@ -24,5 +24,6 @@ namespace AutoLike.Users.Dtos
 
         public string ConcurrencyStamp { get; set; }
         public decimal Balance { get; set; }
+        public QRCodeDto QRCode { get; set; }
     }
 }
