@@ -42,12 +42,9 @@ namespace AutoLike.Users
             this.qrCodeGenerator = qrCodeGenerator;
         }
 
-        public async Task<QRCodeDto> GenerateQrcodeAsync()
+        public Task<QRCodeDto> GenerateQrcodeAsync()
         {
-            var qr = await repository.InsertAsync(new QRCode { ExpiredTime = DateTime.Now.AddMinutes(QRCodeExpiredTime) });
-            var obj = ObjectMapper.Map<QRCode, QRCodeDto>(qr);
-            obj.Base64Image = qrCodeGenerator.Generate(obj.Id.ToString());
-            return obj;
+            return qrCodeGenerator.GenerateQrcodeAsync();
         }
 
         public async Task<ProfileDto> GetAsync()
@@ -56,7 +53,7 @@ namespace AutoLike.Users
             var balance = currentUser.GetBalance();
             var result = ObjectMapper.Map<IdentityUser, ProfileDto>(currentUser);
             result.Balance = balance;
-            result.QRCode = await GenerateQrcodeAsync();
+            //result.QRCode = await GenerateQrcodeAsync();
             return result;
         }
 

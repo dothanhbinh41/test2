@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoLike.Users.Dtos;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Volo.Abp.Application.Dtos;
@@ -20,5 +21,6 @@ namespace AutoLike.Agencies.Dtos
         public Guid AgencyKey { set; get; }
         public CommonStatus Status { get; set; }
         public string[] WhiteListIP { get; set; }
+        public QRCodeDto QRCode { get; set; }
     }
 }

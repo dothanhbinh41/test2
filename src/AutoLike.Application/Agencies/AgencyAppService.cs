@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 using MongoDB.Driver;
 using Volo.Abp.Guids;
 using Volo.Abp.Uow;
+using AutoLike.Services;
 
 namespace AutoLike.Agencies
 {
@@ -21,14 +22,17 @@ namespace AutoLike.Agencies
     public class AgencyAppService : CrudAppService<Agency, AgencyDto, Guid, PagedResultRequestDto, CreateAgencyDto, UpdateAgencyDto>, IAgencyAppService
     {
         static TimeSpan TimeRefresh = TimeSpan.FromHours(8);
+        private readonly IQrCodeGenerator qrCodeGenerator;
         private readonly IRepository<AgencyKey, Guid> agencyKeyRepository;
         private readonly IGuidGenerator guidGenerator;
 
         public AgencyAppService(
+            IQrCodeGenerator qrCodeGenerator,
             IRepository<Agency, Guid> repository,
             IRepository<AgencyKey, Guid> agencyKeyRepository,
             IGuidGenerator guidGenerator) : base(repository)
         {
+            this.qrCodeGenerator = qrCodeGenerator;
             this.agencyKeyRepository = agencyKeyRepository;
             this.guidGenerator = guidGenerator;
         }
@@ -63,7 +67,9 @@ namespace AutoLike.Agencies
                 throw new Volo.Abp.UserFriendlyException("You have to register to get information");
             }
 
-            return ObjectMapper.Map<Agency, AgencyDetailDto>(exist);
+            var obj = ObjectMapper.Map<Agency, AgencyDetailDto>(exist);
+            obj.QRCode = await qrCodeGenerator.GenerateQrcodeAsync();
+            return obj;
         }
 
         [UnitOfWork]
@@ -81,7 +87,9 @@ namespace AutoLike.Agencies
             var agency = await Repository.InsertAsync(input);
             await agencyKeyRepository.InsertAsync(new AgencyKey(agencyKey) { AgencyId = agency.Id });
             await UnitOfWorkManager.Current.SaveChangesAsync();
-            return ObjectMapper.Map<Agency, AgencyDto>(agency);
+            var obj = ObjectMapper.Map<Agency, AgencyDto>(agency);
+            obj.QRCode = await qrCodeGenerator.GenerateQrcodeAsync();
+            return obj;
         }
 
         [Authorize(AutoLikePermissions.CreateAgencyPermission)]
