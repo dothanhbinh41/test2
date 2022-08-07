@@ -15,6 +15,8 @@ using AutoLike.Agencies;
 using AutoLike.Financials.Dtos;
 using AutoLike.Financials;
 using AutoLike.IdentityServer;
+using AutoLike.Transactions.Dtos;
+using AutoLike.Transactions;
 
 namespace AutoLike;
 
@@ -55,6 +57,7 @@ public class AutoLikeApplicationAutoMapperProfile : Profile
         CreateMap<RegisterAgencyDto, Agency>();
         CreateMap<Agency, AgencyDetailDto>();
         CreateMap<QRCode, QRCodeDto>();
+        CreateMap<Transaction, TransactionDto>();
 
         CreateMap<IdentityUser, ProfileDto>()
            .ForMember(dest => dest.HasPassword,

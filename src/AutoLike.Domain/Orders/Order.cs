@@ -8,13 +8,13 @@ using Volo.Abp.Domain.Entities.Auditing;
 
 namespace AutoLike.Orders
 {
-    public class Order : FullAuditedAggregateRoot<Guid>, ITransactionInformation
+    public class Order : FullAuditedAggregateRoot<Guid>
     {
         public Order()
         {
 
         }
-        public Order(Guid id):base(id)
+        public Order(Guid id) : base(id)
         {
 
         }
@@ -33,8 +33,7 @@ namespace AutoLike.Orders
         public ICollection<OrderProcess> Processes { get; set; }
         public string[] Targets { get; set; }
     }
-
-
+     
     public class OrderProcess : FullAuditedAggregateRoot<Guid>
     {
         public Guid OrderId { get; set; }

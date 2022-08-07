@@ -15,7 +15,7 @@ namespace AutoLike.Transactions
     {
         public UserBase User { get; set; }
         public decimal Value { get; set; }
-        public ITransactionInformation Information { get; set; }
+        public TransactionInformation Information { get; set; }
         public TransactionType TransactionType { get; set; }
     }
 }

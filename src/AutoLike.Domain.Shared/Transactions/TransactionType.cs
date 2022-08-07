@@ -6,6 +6,6 @@ namespace AutoLike.Transactions
 {
     public enum TransactionType
     {
-        Deposit, Service, Refund
+        Deposit, Service, Refund, Gift
     }
 }

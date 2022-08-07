@@ -20,6 +20,7 @@ using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Guids;
 using Volo.Abp.Identity;
 using Volo.Abp.ObjectMapping;
+using Volo.Abp.Uow;
 
 namespace AutoLike.Orders
 {
@@ -31,7 +32,6 @@ namespace AutoLike.Orders
         private readonly IUidValidator uidValidator;
         private readonly ICodeGenerator codeGenerator;
         private readonly IBackgroundJobManager backgroundJobManager;
-        private readonly IMongoClient mongoClient;
         private readonly ITransactionService transactionService;
         private readonly IRepository<OrderProcess, Guid> orderProcessRepository;
         private readonly IRepository<Order, Guid> orderRepository;
@@ -55,7 +55,6 @@ namespace AutoLike.Orders
             this.orderProcessRepository = orderProcessRepository;
             this.orderRepository = orderRepository;
             this.serviceRepository = serviceRepository;
-            mongoClient = new MongoClient("mongodb://admin:fukSkNQngNpPG6e@62.112.8.24:27017/AutoLikeV8?authSource=admin");
         }
 
         public async Task<OrderDto> CancelAsync(Guid id)
@@ -80,6 +79,7 @@ namespace AutoLike.Orders
 
         }
 
+        [UnitOfWork]
         public async Task<OrderDto> CreateAsync(CreateOrderDto request)
         {
             var service = await serviceRepository.FindAsync(d => d.Id == request.ServiceId);
@@ -115,20 +115,22 @@ namespace AutoLike.Orders
                 Service = ObjectMapper.Map<Service, ServiceBase>(service)
             };
             order.Code = codeGenerator.Generate(order.Id, GenerateCode.Order);
-            using (var session = mongoClient.StartSession())
-            {
-                session.StartTransaction();
-                var orderResult = await orderRepository.InsertAsync(order);
-                if (orderResult == null)
-                {
-                    session.AbortTransaction();
-                    throw new UserFriendlyException("");
-                }
 
-                await transactionService.TranferFromUserAsync(CurrentUser.ToBase(), request.Quantity, orderResult, TransactionType.Service);
-                session.CommitTransaction();
-                return ObjectMapper.Map<Order, OrderDto>(orderResult);
+
+            var orderResult = await orderRepository.InsertAsync(order);
+            if (orderResult == null)
+            {
+                throw new UserFriendlyException("Has Errors");
             }
+
+            await transactionService.TranferFromUserAsync(CurrentUser.ToBase(), request.Quantity, new TransactionInformation
+            {
+                Id = orderResult.Id,
+                Code = orderResult.Code
+            }, TransactionType.Service);
+
+            return ObjectMapper.Map<Order, OrderDto>(orderResult);
+
         }
 
         public async Task<PagedResultDto<OrderDto>> GetOrdersAsync(
@@ -159,38 +161,32 @@ namespace AutoLike.Orders
             {
                 throw new UserFriendlyException("");
             }
-            using (var session = mongoClient.StartSession())
-            {
-                session.StartTransaction();
-                var process = await orderProcessRepository.InsertAsync(new OrderProcess { OrderId = request.OrderId, Quantity = request.Quantity });
-                if (process == null)
-                {
-                    session.AbortTransaction();
-                    throw new UserFriendlyException("");
-                }
-                order.CompletedQuantity += process.Quantity;
-                if (order.CompletedQuantity >= order.Quantity)
-                {
-                    order.Status = OrderStatus.Complete;
-                }
-                if (order.Processes == null)
-                {
-                    order.Processes = new OrderProcess[] { process };
-                }
-                else
-                {
-                    order.Processes.Add(process);
-                }
 
-                var update = await orderRepository.UpdateAsync(order);
-                if (update == null)
-                {
-                    session.AbortTransaction();
-                    throw new UserFriendlyException("");
-                }
-                session.CommitTransaction();
-                return ObjectMapper.Map<Order, OrderDto>(update);
+            var process = await orderProcessRepository.InsertAsync(new OrderProcess { OrderId = request.OrderId, Quantity = request.Quantity });
+            if (process == null)
+            {
+                throw new UserFriendlyException("");
             }
+            order.CompletedQuantity += process.Quantity;
+            if (order.CompletedQuantity >= order.Quantity)
+            {
+                order.Status = OrderStatus.Complete;
+            }
+            if (order.Processes == null)
+            {
+                order.Processes = new OrderProcess[] { process };
+            }
+            else
+            {
+                order.Processes.Add(process);
+            }
+
+            var update = await orderRepository.UpdateAsync(order);
+            if (update == null)
+            {
+                throw new UserFriendlyException("");
+            }
+            return ObjectMapper.Map<Order, OrderDto>(update);
         }
     }
 }

@@ -62,9 +62,9 @@ namespace AutoLike.Financials
         {
             var financialCollection = await financialRepository.GetCollectionAsync();
             var transactionCollection = await transactionRepository.GetCollectionAsync();
-             
+
             using (var uow = UnitOfWorkManager.Begin(new Volo.Abp.Uow.AbpUnitOfWorkOptions { IsTransactional = true }))
-            { 
+            {
                 var update = Builders<Financial>.Update.Set(d => d.Status, FinancialStatus.Complete);
                 var fin = await financialCollection.FindOneAndUpdateAsync(d => d.Id == id && d.Status == FinancialStatus.Pending, update);
                 if (fin == null)
@@ -73,7 +73,11 @@ namespace AutoLike.Financials
                     throw new UserFriendlyException("");
                 }
 
-                await transactionService.TranferToUserAsync(fin.User, fin.Amount + CalculateBonus(fin), fin, TransactionType.Deposit);
+                await transactionService.TranferToUserAsync(fin.User, fin.Amount + CalculateBonus(fin), new TransactionInformation
+                {
+                    Id = fin.Id,
+                    Code = fin.Code
+                }, TransactionType.Deposit);
                 await uow.SaveChangesAsync();
                 return ObjectMapper.Map<Financial, FinancialDto>(fin);
             }
@@ -99,7 +103,7 @@ namespace AutoLike.Financials
                 throw new UserFriendlyException("Amount negative");
             }
             //check last request
-            var lastDeposit = (await financialRepository.GetQueryableAsync()) 
+            var lastDeposit = (await financialRepository.GetQueryableAsync())
                 .Where(d => d.CreatorId == CurrentUser.Id.Value).ToList().LastOrDefault();
             if (lastDeposit != null && DateTime.UtcNow.Subtract(lastDeposit.CreationTime.ToUniversalTime()) < TimeSpan.FromMinutes(appSetting.TimeDeposit))
             {
@@ -116,13 +120,13 @@ namespace AutoLike.Financials
 
             //find promotion
             var promotion = await promotionRepository.FindAsync(d => d.IsActived && request.Amount >= d.Begin && request.Amount <= d.End);
-            var fin = new Financial(guidGenerator.Create()) { Amount = request.Amount};
+            var fin = new Financial(guidGenerator.Create()) { Amount = request.Amount };
             if (promotion != null)
             {
                 fin.Promotion = promotion;
             }
             fin.User = CurrentUser.ToBase();
-            fin.Bonus = CalculateBonus(fin); 
+            fin.Bonus = CalculateBonus(fin);
             fin.Code = codeGenerator.Generate(fin.Id, GenerateCode.Financial);
             var obj = await financialRepository.InsertAsync(fin);
             return ObjectMapper.Map<Financial, FinancialDto>(obj);

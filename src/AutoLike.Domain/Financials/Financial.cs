@@ -11,7 +11,7 @@ using Volo.Abp.Domain.Entities.Auditing;
 
 namespace AutoLike.Financials
 {
-    public class Financial : FullAuditedAggregateRoot<Guid>, ITransactionInformation
+    public class Financial : FullAuditedAggregateRoot<Guid>
     {
         public Financial()
         {

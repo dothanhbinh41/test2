@@ -17,8 +17,8 @@ namespace AutoLike.Transactions
 {
     public interface ITransactionService : ITransientDependency
     {
-        Task TranferToUserAsync(UserBase user, decimal amount, ITransactionInformation info, TransactionType TransactionType);
-        Task TranferFromUserAsync(UserBase user, decimal amount, ITransactionInformation info, TransactionType TransactionType);
+        Task TranferToUserAsync(UserBase user, decimal amount, TransactionInformation info, TransactionType TransactionType);
+        Task TranferFromUserAsync(UserBase user, decimal amount, TransactionInformation info, TransactionType TransactionType);
     }
      
     public class TransactionService : ITransactionService
@@ -34,13 +34,13 @@ namespace AutoLike.Transactions
             this.identityUserManager = identityUserManager;
         }
 
-        public async Task TranferFromUserAsync(UserBase user, decimal amount, ITransactionInformation info, TransactionType TransactionType)
+        public async Task TranferFromUserAsync(UserBase user, decimal amount, TransactionInformation info, TransactionType TransactionType)
         {
             await EnsureAmountGreaterZero(amount);
             await TranferAsync(user, -amount, info, TransactionType);
         }
 
-        public async Task TranferToUserAsync(UserBase user, decimal amount, ITransactionInformation info, TransactionType TransactionType)
+        public async Task TranferToUserAsync(UserBase user, decimal amount, TransactionInformation info, TransactionType TransactionType)
         {
             await EnsureAmountGreaterZero(amount);
             await TranferAsync(user, amount, info, TransactionType);
@@ -55,7 +55,7 @@ namespace AutoLike.Transactions
             return Task.CompletedTask;
         }
 
-        public async Task TranferAsync(UserBase u, decimal amount, ITransactionInformation info, TransactionType TransactionType)
+        public async Task TranferAsync(UserBase u, decimal amount, TransactionInformation info, TransactionType TransactionType)
         {
             //make transaction
             var trans = await transactionRepository.InsertAsync(new Transaction

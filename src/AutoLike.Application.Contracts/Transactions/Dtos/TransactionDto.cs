@@ -10,7 +10,8 @@ namespace AutoLike.Transactions.Dtos
     {
         public UserBaseDto User { get; set; }
         public decimal Value { get; set; }
-        public ITransactionInformation Information { get; set; }
+        public TransactionInformation Information { get; set; }
         public TransactionType TransactionType { get; set; }
+        public DateTimeOffset CreationTime { get; set; }
     }
 }

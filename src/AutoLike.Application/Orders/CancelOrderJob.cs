@@ -14,19 +14,16 @@ using Volo.Abp.Domain.Repositories.MongoDB;
 namespace AutoLike.Orders
 {
     public class CancelOrderJob : AsyncBackgroundJob<CancelOrderArgs>, ITransientDependency
-    {
-        private readonly IMongoClient mongoClient;
+    { 
         private readonly ITransactionService transactionService;
         private readonly IRepository<Order, Guid> orderRepository;
         private readonly IRepository<OrderProcess, Guid> orderProcessRepository;
 
-        public CancelOrderJob(
-            IMongoClient mongoClient,
+        public CancelOrderJob( 
             ITransactionService transactionService,
             IRepository<Order, Guid> orderRepository,
             IRepository<OrderProcess, Guid> orderProcessRepository)
-        {
-            this.mongoClient = mongoClient;
+        { 
             this.transactionService = transactionService;
             this.orderRepository = orderRepository;
             this.orderProcessRepository = orderProcessRepository;
@@ -36,7 +33,7 @@ namespace AutoLike.Orders
             var order = await orderRepository.GetAsync(args.OrderId);
             if (order == null)
             {
-                throw new UserFriendlyException("");
+                throw new UserFriendlyException("Order notfound");
             }
             var completeValue = await CalculateCompleteValue(args.OrderId);
             var refund = order.Price - completeValue * (order.Speed.Price + order.Warranty.Price);
@@ -44,20 +41,15 @@ namespace AutoLike.Orders
             {
                 return;
             }
-
-            using (var session = mongoClient.StartSession())
-            {
-                session.StartTransaction();
-                await transactionService.TranferToUserAsync(order.User, refund, order, TransactionType.Refund);
-                order.Status = OrderStatus.InActive;
-                await orderRepository.UpdateAsync(order);
-                session.CommitTransaction();
-            }
+             
+            await transactionService.TranferToUserAsync(order.User, refund, new TransactionInformation { Id = order.Id, Code = order.Code }, TransactionType.Refund);
+            order.Status = OrderStatus.InActive;
+            await orderRepository.UpdateAsync(order);  
         }
 
         private Task<int> CalculateCompleteValue(Guid orderId)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(0);
         }
     }
 }
