@@ -14,5 +14,6 @@ namespace AutoLike.Financials
         Task<FinancialDto> DepositAsync(DepositRequestDto request);
         Task<PagedResultDto<FinancialDto>> GetAllFinancialsAsync(FilterFinancialRequestDto request);
         Task<PagedResultDto<FinancialDto>> GetFinancialsByUserAsync(PagedResultRequestDto request);
+        Task<FinancialDto> GetAsync(Guid id);
     }
 }
