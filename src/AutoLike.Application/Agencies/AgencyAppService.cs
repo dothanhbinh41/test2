@@ -15,6 +15,7 @@ using MongoDB.Driver;
 using Volo.Abp.Guids;
 using Volo.Abp.Uow;
 using AutoLike.Services;
+using System.Reflection;
 
 namespace AutoLike.Agencies
 {
@@ -72,6 +73,8 @@ namespace AutoLike.Agencies
             return obj;
         }
 
+
+
         [UnitOfWork]
         public async Task<AgencyDto> RegisterAgency(RegisterAgencyDto request)
         {
@@ -127,6 +130,49 @@ namespace AutoLike.Agencies
         public override Task<PagedResultDto<AgencyDto>> GetListAsync(PagedResultRequestDto input)
         {
             return base.GetListAsync(input);
+        }
+
+        public async Task<AgencyDto> UpdateAgencyAsync(UpdateAgencyDto request)
+        {
+            var agency = await Repository.FindAsync(d => d.UserId == CurrentUser.Id.Value);
+            if (agency == null)
+            {
+                throw new Volo.Abp.UserFriendlyException("You have to register to get information");
+            }
+
+            if (!string.IsNullOrEmpty(request.Fullname))
+            {
+                agency.Fullname = request.Fullname;
+            }
+            agency = UpdateValue<UpdateAgencyDto, Agency>(agency, request);
+            await Repository.UpdateAsync(agency);
+            var obj = ObjectMapper.Map<Agency, AgencyDetailDto>(agency);
+            obj.QRCode = await qrCodeGenerator.GenerateQrcodeAsync();
+            return obj;
+        }
+
+
+        TOut UpdateValue<TIn, TOut>(TOut objOut, TIn objIn)
+        {
+            var properties = typeof(TIn).GetProperties();
+            for (int i = 0; i < properties.Length; i++)
+            {
+                var property = properties[i];
+                var value = properties[i].GetValue(objIn);
+                if (value != null || value is string vlStr && !string.IsNullOrEmpty(vlStr))
+                {
+                    try
+                    {
+                        var propertyOut = typeof(TOut).GetProperty(property.Name);
+                        propertyOut.SetValue(objOut, value);
+                    }
+                    catch
+                    {
+
+                    }
+                }
+            }
+            return objOut;
         }
     }
 }
