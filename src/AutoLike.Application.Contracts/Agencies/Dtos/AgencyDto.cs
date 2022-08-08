@@ -9,6 +9,7 @@ namespace AutoLike.Agencies.Dtos
     public class AgencyDto : EntityDto<Guid>
     {
         public Guid UserId { get; set; }
+        public string PhoneNumber { get; set; }
         public string AccountName { get; set; }
         public string BankName { get; set; }
         public string BankNumber { get; set; }
