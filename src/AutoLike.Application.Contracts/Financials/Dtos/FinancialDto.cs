@@ -16,5 +16,6 @@ namespace AutoLike.Financials.Dtos
         //public FinancialUnit Unit { get; set; } 
         public FinancialStatus Status { get; set; }
         public PromotionDto Promotion { get; set; }
+        public DateTimeOffset CreationTime { get; set; }
     }
 }

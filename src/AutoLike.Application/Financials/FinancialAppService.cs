@@ -160,5 +160,12 @@ namespace AutoLike.Financials
             var items = result.PageBy(request.SkipCount, request.MaxResultCount).ToList();
             return new PagedResultDto<FinancialDto>(count, ObjectMapper.Map<List<Financial>, List<FinancialDto>>(items));
         }
+
+
+        public async Task<FinancialDto> GetAsync(Guid id)
+        {
+            var financial = await financialRepository.GetAsync(id);
+            return ObjectMapper.Map<Financial, FinancialDto>(financial);
+        }
     }
 }
