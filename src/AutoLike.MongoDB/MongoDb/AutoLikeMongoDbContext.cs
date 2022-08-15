@@ -36,6 +36,7 @@ public class AutoLikeMongoDbContext : AbpMongoDbContext
     public IMongoCollection<Tracking> Trackings => Collection<Tracking>();
     public IMongoCollection<UserActionLock> UserActionLocks => Collection<UserActionLock>();
     public IMongoCollection<OrderProcess> OrderProcesses => Collection<OrderProcess>(); 
+    public IMongoCollection<UserGiftCode> UserGiftCodes => Collection<UserGiftCode>(); 
 
     protected override void CreateModel(IMongoModelBuilder modelBuilder)
     {
