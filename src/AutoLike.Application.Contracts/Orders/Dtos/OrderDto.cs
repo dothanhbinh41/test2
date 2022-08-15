@@ -25,5 +25,6 @@ namespace AutoLike.Orders.Dtos
         public Speed Speed { set; get; }
         public string[] Targets { get; set; }
         public string ServiceCode { get; set; }
+        public DateTime CreationTime { get; set; }
     }
 }
