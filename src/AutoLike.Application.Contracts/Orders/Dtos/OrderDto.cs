@@ -24,7 +24,7 @@ namespace AutoLike.Orders.Dtos
         public Warranty Warranty { set; get; }
         public Speed Speed { set; get; }
         public string[] Targets { get; set; }
-        public string ServiceCode { get; set; }
-        public DateTime CreationTime { get; set; }
+        public string ServiceCode { get; set; } 
+        public DateTimeOffset CreationTime { get; set; }
     }
 }
