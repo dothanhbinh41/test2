@@ -31,6 +31,7 @@ using Hangfire;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using AutoLike.Options;
 using Microsoft.AspNetCore.Identity;
+using Volo.Abp.Settings;
 
 namespace AutoLike;
 [DependsOn(
@@ -258,5 +259,5 @@ public class AutoLikeHttpApiHostModule : AbpModule
         app.UseAbpSerilogEnrichers();
         app.UseUnitOfWork();
         app.UseConfiguredEndpoints();
-    }
+    } 
 }

@@ -17,6 +17,7 @@ using AutoLike.Financials;
 using AutoLike.IdentityServer;
 using AutoLike.Transactions.Dtos;
 using AutoLike.Transactions;
+using System;
 
 namespace AutoLike;
 
@@ -39,14 +40,14 @@ public class AutoLikeApplicationAutoMapperProfile : Profile
         CreateMap<UserBaseDto, UserBase>();
 
 
-        CreateMap<CreateServiceDto, Service>(); 
-        CreateMap<ServiceDto, Service>(); 
-        CreateMap<Service, ServiceDto>();         
-        CreateMap<Service, ServiceMenuDto>();         
-        
-        CreateMap<CreateOrderDto, Order>(); 
-        CreateMap<OrderDto, Order>(); 
-        CreateMap<Order, OrderDto>();
+        CreateMap<CreateServiceDto, Service>();
+        CreateMap<ServiceDto, Service>();
+        CreateMap<Service, ServiceDto>();
+        CreateMap<Service, ServiceMenuDto>();
+
+        CreateMap<CreateOrderDto, Order>();
+        CreateMap<OrderDto, Order>();
+        CreateMap<Order, OrderDto>();//.ForMember(d => d.CreationTime, d => d.MapFrom(c => new DateTimeOffset(c.CreationTime.ToUniversalTime())));
 
         CreateMap<CreateAgencyDto, Agency>();
         CreateMap<AgencyDto, Agency>();
@@ -57,7 +58,7 @@ public class AutoLikeApplicationAutoMapperProfile : Profile
         CreateMap<RegisterAgencyDto, Agency>();
         CreateMap<Agency, AgencyDetailDto>();
         CreateMap<QRCode, QRCodeDto>();
-        CreateMap<Transaction, TransactionDto>();
+        CreateMap<Transaction, TransactionDto>().ForMember(d => d.CreationTime, d => d.MapFrom(c => new DateTimeOffset(c.CreationTime.ToUniversalTime())));
 
         CreateMap<IdentityUser, ProfileDto>()
            .ForMember(dest => dest.HasPassword,

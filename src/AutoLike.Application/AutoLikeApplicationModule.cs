@@ -30,5 +30,5 @@ namespace AutoLike;
         {
             options.AddMaps<AutoLikeApplicationModule>();
         });
-    }
+    } 
 }

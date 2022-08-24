@@ -162,17 +162,15 @@ public class AutoLikeIdentityServerModule : AbpModule
             
             options.AddDefaultPolicy(builder =>
             {
-                var str = "http://149.28.192.142:10002,http://localhost:3000,http://149.28.192.142:10003";
+                var origins = new string[]
+                {
+                    "http://149.28.192.142:10002",
+                    "http://localhost:3000",
+                    "http://149.28.192.142:10003",
+                };
                 builder
-                    .WithOrigins(
-                        str
-                            .Split(",", StringSplitOptions.RemoveEmptyEntries)
-                            .Select(o => o.RemovePostFix("/"))
-                            .ToArray()
-                    )
-                    .AllowCredentials()
-                    .WithAbpExposedHeaders()
-                    .SetIsOriginAllowedToAllowWildcardSubdomains()
+                    .WithOrigins(origins)
+                    .AllowCredentials() 
                     .AllowAnyHeader()
                     .AllowAnyMethod();
             });
