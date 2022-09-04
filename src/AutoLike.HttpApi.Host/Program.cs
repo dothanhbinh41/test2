@@ -14,7 +14,7 @@ namespace AutoLike;
 public class Program
 {
     public async static Task<int> Main(string[] args)
-    { 
+    {
         Log.Logger = new LoggerConfiguration()
 #if DEBUG
             .MinimumLevel.Debug()
@@ -29,17 +29,19 @@ public class Program
             .CreateLogger();
 
         try
-        { 
+        {
+            var contentRoot = Directory.GetCurrentDirectory();
+
             Log.Information("Starting AutoLike.HttpApi.Host.");
-            var builder = WebApplication.CreateBuilder(args); 
+            var builder = WebApplication.CreateBuilder(args);
             builder.WebHost.UseUrls("http://0.0.0.0:10002");
-            builder.Host.AddAppSettingsSecretsJson(path: "appsettings.json")
+            builder.Host.AddAppSettingsSecretsJson(path: contentRoot + "/appsettings.json")
                 .UseAutofac()
                 .UseSerilog();
-                
+
             await builder.AddApplicationAsync<AutoLikeHttpApiHostModule>();
             var app = builder.Build();
-          
+
             await app.InitializeApplicationAsync();
             await app.RunAsync();
             return 0;
