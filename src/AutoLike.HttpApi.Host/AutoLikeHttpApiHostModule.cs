@@ -79,21 +79,8 @@ public class AutoLikeHttpApiHostModule : AbpModule
     }
 
     private void ConfigureCache(IConfiguration configuration)
-    {
-        Configure<AbpDbConnectionOptions>(d =>
-        {
-            d.ConnectionStrings = new ConnectionStrings
-            {
-                {ConnectionStrings.DefaultConnectionStringName,"mongodb://admin:fukSkNQngNpPG6e@62.112.8.24:27017/AutoLikeV8?authSource=admin"}
-
-            }; 
-        }); 
-        Configure<AbpDistributedCacheOptions>(options => { options.KeyPrefix = "AutoLike:"; });
-        Configure<SwaggerGeneratorOptions>(options => {
-            options.Servers.Add(new OpenApiServer {
-                Url = "http://103.179.191.190:10002"
-            });
-        });    
+    { 
+        Configure<AbpDistributedCacheOptions>(options => { options.KeyPrefix = "AutoLike:"; });    
     }
 
     private void ConfigureHangfire(ServiceConfigurationContext context)
