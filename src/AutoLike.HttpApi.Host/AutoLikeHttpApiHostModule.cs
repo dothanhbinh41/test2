@@ -85,12 +85,14 @@ public class AutoLikeHttpApiHostModule : AbpModule
                 {ConnectionStrings.DefaultConnectionStringName,"mongodb://admin:fukSkNQngNpPG6e@62.112.8.24:27017/AutoLikeV8?authSource=admin"}
 
             }; 
-        });
+        }); 
         Configure<AbpDistributedCacheOptions>(options => { options.KeyPrefix = "AutoLike:"; });
+        
     }
 
     private void ConfigureHangfire(ServiceConfigurationContext context)
     {
+        context.Services.AddSwaggerGen();
         context.Services.AddHangfire(config =>
         {
             config.UseInMemoryStorage();
