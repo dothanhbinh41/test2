@@ -32,7 +32,7 @@ public class Program
         {
             Log.Information("Starting AutoLike.HttpApi.Host.");
             var builder = WebApplication.CreateBuilder(args); 
-            builder.WebHost.UseUrls("http://0.0.0.0:10002");
+            builder.WebHost.UseUrls("http://0.0.0.0:10004");
             builder.WebHost.ConfigureAppConfiguration((context, dl) =>
             {
                 dl.AddConfiguration(Configuration);
