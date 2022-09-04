@@ -1,5 +1,5 @@
 [Unit]
-Description=api12x.autofarmer.net
+Description=identity.autolike.cc
 ConditionPathExists=/root/Autolike.v8/identity.autolike.cc
 After=network.target
 
