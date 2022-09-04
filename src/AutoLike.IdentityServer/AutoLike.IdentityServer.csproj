@@ -59,4 +59,298 @@
     <ProjectReference Include="..\AutoLike.MongoDB\AutoLike.MongoDB.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="wwwroot\global-styles.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\%40fortawesome\fontawesome-free\css\all.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\%40fortawesome\fontawesome-free\css\v4-shims.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\abp\core\abp.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\abp\core\abp.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\bootstrap-datepicker.css.map">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\bootstrap-datepicker.min.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\bootstrap-datepicker.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker-en-CA.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.ar-tn.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.ar.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.az.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.bg.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.bm.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.bn.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.br.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.bs.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.ca.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.cs.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.cy.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.da.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.de.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.el.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.en-AU.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.en-CA.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.en-GB.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.en-IE.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.en-NZ.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.en-ZA.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.eo.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.es.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.et.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.eu.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.fa.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.fi.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.fo.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.fr-CH.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.fr.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.gl.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.he.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.hi.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.hr.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.hu.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.hy.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.id.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.is.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.it-CH.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.it.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.ja.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.ka.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.kh.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.kk.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.km.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.ko.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.kr.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.lt.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.lv.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.me.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.mk.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.mn.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.ms.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.nl-BE.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.nl.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.no.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.oc.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.pl.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.pt-BR.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.pt.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.ro.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.rs-latin.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.rs.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.ru.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.si.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.sk.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.sl.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.sq.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.sr-latin.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.sr.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.sv.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.sw.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.ta.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.tg.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.th.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.tk.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.tr.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.uk.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.uz-cyrl.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.uz-latn.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.vi.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.zh-CN.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap-datepicker\locales\bootstrap-datepicker.zh-TW.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap\css\bootstrap.css.map">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap\css\bootstrap.min.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap\css\bootstrap.rtl.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap\js\bootstrap.bundle.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap\js\bootstrap.enable.popovers.everywhere.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\libs\bootstrap\js\bootstrap.enable.tooltips.everywhere.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
