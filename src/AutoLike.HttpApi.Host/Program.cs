@@ -29,21 +29,13 @@ public class Program
             .CreateLogger();
 
         try
-        {
-            var contentRoot = Directory.GetCurrentDirectory();
-            var webRoot = Path.Combine(contentRoot, "..", "wwwroot");
-             
+        { 
             Log.Information("Starting AutoLike.HttpApi.Host.");
             var builder = WebApplication.CreateBuilder(args); 
             builder.WebHost.UseUrls("http://0.0.0.0:10002");
-            builder.WebHost
-                .UseWebRoot(webRoot) 
-                .UseWebRoot(contentRoot)
-                .UseContentRoot(contentRoot);
             builder.Host.AddAppSettingsSecretsJson()
                 .UseAutofac()
-                .UseSerilog()
-                .UseContentRoot(contentRoot) ;
+                .UseSerilog();
                 
             await builder.AddApplicationAsync<AutoLikeHttpApiHostModule>();
             var app = builder.Build();
