@@ -35,10 +35,10 @@ public class Program
                 .UseAutofac()
                 .UseSerilog();
             builder.WebHost.UseUrls("http://0.0.0.0:10001"); 
-            builder.WebHost.ConfigureAppConfiguration((context, dl) =>
-            {
-                dl.AddConfiguration(Configuration);
-            });
+            //builder.WebHost.ConfigureAppConfiguration((context, dl) =>
+            //{
+            //    dl.AddConfiguration(Configuration);
+            //});
             await builder.AddApplicationAsync<AutoLikeIdentityServerModule>();
             var app = builder.Build(); 
             await app.InitializeApplicationAsync();
