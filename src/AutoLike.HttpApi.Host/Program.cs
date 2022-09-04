@@ -33,14 +33,9 @@ public class Program
             var contentRoot = Directory.GetCurrentDirectory();
 
             Log.Information("Starting AutoLike.HttpApi.Host.");
+            Log.Information("Starting AutoLike.HttpApi.Host." + Directory.GetCurrentDirectory());
             var builder = WebApplication.CreateBuilder(args);
-            builder.WebHost.UseUrls("http://0.0.0.0:10002");
-            builder.WebHost.ConfigureAppConfiguration((c, x) =>
-            {
-
-                x.AddConfiguration(Configuration);
-
-            });
+            builder.WebHost.UseUrls("http://0.0.0.0:10002"); 
             builder.Host.AddAppSettingsSecretsJson()
                 .UseAutofac()
                 .UseSerilog();
@@ -61,13 +56,5 @@ public class Program
         {
             Log.CloseAndFlush();
         }
-    }
-
-
-    public static IConfiguration Configuration { get; } = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true) // reloadOnChange Whether the configuration should be reloaded if the file changes.
-            .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ENVIRONMENT")}.json", optional: true, reloadOnChange: true)
-            .AddEnvironmentVariables() // Environment Variables override all other, ** THIS SHOULD ALWAYS BE LAST
-            .Build();
+    } 
 }
