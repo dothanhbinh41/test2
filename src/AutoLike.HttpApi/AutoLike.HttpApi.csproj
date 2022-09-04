@@ -5,8 +5,7 @@
   <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
         <RootNamespace>AutoLike</RootNamespace>
-        <AssemblyName>api8.autolike.cc</AssemblyName>
-
+        
   </PropertyGroup>
 
   <ItemGroup>
