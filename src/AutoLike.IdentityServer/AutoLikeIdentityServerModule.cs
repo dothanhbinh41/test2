@@ -164,9 +164,8 @@ public class AutoLikeIdentityServerModule : AbpModule
             {
                 var origins = new string[]
                 {
-                    "http://62.112.8.24:10002",
-                    "http://localhost:3000",
-                    "http://62.112.8.24:10003",
+                    "https://www8.autolike.cc", 
+                    "https://*.autolike.cc",
                 };
                 builder
                     .WithOrigins(origins)
