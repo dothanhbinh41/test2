@@ -34,6 +34,8 @@ using Microsoft.AspNetCore.Identity;
 using Volo.Abp.Settings;
 using MongoDB.Driver;
 using Volo.Abp.Data;
+using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace AutoLike;
 [DependsOn(
@@ -87,7 +89,11 @@ public class AutoLikeHttpApiHostModule : AbpModule
             }; 
         }); 
         Configure<AbpDistributedCacheOptions>(options => { options.KeyPrefix = "AutoLike:"; });
-        
+        Configure<SwaggerGeneratorOptions>(options => {
+            options.Servers.Add(new OpenApiServer {
+                Url = "http://103.179.191.190:10002"
+            });
+        });    
     }
 
     private void ConfigureHangfire(ServiceConfigurationContext context)
