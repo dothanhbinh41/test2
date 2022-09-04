@@ -1,9 +1,9 @@
 ﻿using System;
-using System.IO;
 using System.Threading.Tasks;
 using AutoLike.Transactions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
@@ -14,7 +14,7 @@ namespace AutoLike;
 public class Program
 {
     public async static Task<int> Main(string[] args)
-    {
+    { 
         Log.Logger = new LoggerConfiguration()
 #if DEBUG
             .MinimumLevel.Debug()
@@ -30,19 +30,18 @@ public class Program
 
         try
         {
-            var contentRoot = Directory.GetCurrentDirectory();
-
             Log.Information("Starting AutoLike.HttpApi.Host.");
-            var builder = WebApplication.CreateBuilder(args);
+            var builder = WebApplication.CreateBuilder(args); 
             builder.WebHost.UseUrls("http://0.0.0.0:10002");
-            builder.Host.UseContentRoot(AppContext.BaseDirectory);
+            builder.WebHost.ConfigureAppConfiguration((context, dl) =>
+            {
+                dl.AddConfiguration(Configuration);
+            });
             builder.Host.AddAppSettingsSecretsJson()
                 .UseAutofac()
                 .UseSerilog();
-
             await builder.AddApplicationAsync<AutoLikeHttpApiHostModule>();
             var app = builder.Build();
-
             await app.InitializeApplicationAsync();
             await app.RunAsync();
             return 0;
@@ -58,11 +57,10 @@ public class Program
         }
     }
 
-
-    //public static IConfiguration Configuration { get; } = new ConfigurationBuilder()
-    //        .SetBasePath(AppContext.BaseDirectory)
-    //        .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true) // reloadOnChange Whether the configuration should be reloaded if the file changes.
-    //        .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ENVIRONMENT")}.json", optional: true, reloadOnChange: true)
-    //        .AddEnvironmentVariables() // Environment Variables override all other, ** THIS SHOULD ALWAYS BE LAST
-    //        .Build();
+    public static IConfiguration Configuration { get; } = new ConfigurationBuilder()
+        .SetBasePath(AppContext.BaseDirectory)
+        .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true) // reloadOnChange Whether the configuration should be reloaded if the file changes.
+        .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ENVIRONMENT")}.json", optional: true, reloadOnChange: true)
+        .AddEnvironmentVariables() // Environment Variables override all other, ** THIS SHOULD ALWAYS BE LAST
+        .Build();
 }

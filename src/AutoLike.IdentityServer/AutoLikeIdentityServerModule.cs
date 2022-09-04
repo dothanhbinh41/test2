@@ -164,9 +164,9 @@ public class AutoLikeIdentityServerModule : AbpModule
             {
                 var origins = new string[]
                 {
-                    "http://149.28.192.142:10002",
+                    "http://62.112.8.24:10002",
                     "http://localhost:3000",
-                    "http://149.28.192.142:10003",
+                    "http://62.112.8.24:10003",
                 };
                 builder
                     .WithOrigins(origins)
@@ -178,7 +178,7 @@ public class AutoLikeIdentityServerModule : AbpModule
 
         context.Services.Configure<ForwardedHeadersOptions>(options =>
         {
-            options.KnownProxies.Add(IPAddress.Parse("149.28.192.142"));
+            options.KnownProxies.Add(IPAddress.Parse("62.112.8.24"));
         });
         ConfigureOptions(context, configuration);
     }
