@@ -15,8 +15,7 @@ using Volo.Abp.Identity;
 using Volo.Abp.MongoDB;
 
 namespace AutoLike.MongoDB;
-
-[ConnectionStringName("Default")]
+ 
 public class AutoLikeMongoDbContext : AbpMongoDbContext
 {
     /* Add mongo collections here. Example:
