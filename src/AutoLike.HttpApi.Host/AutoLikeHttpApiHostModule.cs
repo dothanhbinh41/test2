@@ -32,6 +32,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using AutoLike.Options;
 using Microsoft.AspNetCore.Identity;
 using Volo.Abp.Settings;
+using Serilog;
 
 namespace AutoLike;
 [DependsOn(
@@ -71,6 +72,7 @@ public class AutoLikeHttpApiHostModule : AbpModule
 
     private void ConfigureOptions(ServiceConfigurationContext context, IConfiguration configuration)
     {
+        Log.Information("Starting Configuration. "+ configuration["ConnectionStrings:Default"]);
         context.Services.Configure<AppSetting>(configuration.GetSection("Settings"));
     }
 
@@ -91,24 +93,21 @@ public class AutoLikeHttpApiHostModule : AbpModule
     {
         var hostingEnvironment = context.Services.GetHostingEnvironment();
 
-        if (hostingEnvironment.IsDevelopment())
+        Configure<AbpVirtualFileSystemOptions>(options =>
         {
-            Configure<AbpVirtualFileSystemOptions>(options =>
-            {
-                options.FileSets.ReplaceEmbeddedByPhysical<AutoLikeDomainSharedModule>(
-                    Path.Combine(hostingEnvironment.ContentRootPath,
-                        $"..{Path.DirectorySeparatorChar}AutoLike.Domain.Shared"));
-                options.FileSets.ReplaceEmbeddedByPhysical<AutoLikeDomainModule>(
-                    Path.Combine(hostingEnvironment.ContentRootPath,
-                        $"..{Path.DirectorySeparatorChar}AutoLike.Domain"));
-                options.FileSets.ReplaceEmbeddedByPhysical<AutoLikeApplicationContractsModule>(
-                    Path.Combine(hostingEnvironment.ContentRootPath,
-                        $"..{Path.DirectorySeparatorChar}AutoLike.Application.Contracts"));
-                options.FileSets.ReplaceEmbeddedByPhysical<AutoLikeApplicationModule>(
-                    Path.Combine(hostingEnvironment.ContentRootPath,
-                        $"..{Path.DirectorySeparatorChar}AutoLike.Application"));
-            });
-        }
+            options.FileSets.ReplaceEmbeddedByPhysical<AutoLikeDomainSharedModule>(
+                Path.Combine(hostingEnvironment.ContentRootPath,
+                    $"..{Path.DirectorySeparatorChar}AutoLike.Domain.Shared"));
+            options.FileSets.ReplaceEmbeddedByPhysical<AutoLikeDomainModule>(
+                Path.Combine(hostingEnvironment.ContentRootPath,
+                    $"..{Path.DirectorySeparatorChar}AutoLike.Domain"));
+            options.FileSets.ReplaceEmbeddedByPhysical<AutoLikeApplicationContractsModule>(
+                Path.Combine(hostingEnvironment.ContentRootPath,
+                    $"..{Path.DirectorySeparatorChar}AutoLike.Application.Contracts"));
+            options.FileSets.ReplaceEmbeddedByPhysical<AutoLikeApplicationModule>(
+                Path.Combine(hostingEnvironment.ContentRootPath,
+                    $"..{Path.DirectorySeparatorChar}AutoLike.Application"));
+        });
     }
 
     private void ConfigureConventionalControllers()
