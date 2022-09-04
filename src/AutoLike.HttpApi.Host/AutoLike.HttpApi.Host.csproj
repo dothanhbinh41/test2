@@ -3,11 +3,45 @@
   <Import Project="..\..\common.props" />
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <RootNamespace>AutoLike</RootNamespace>
-    <PreserveCompilationReferences>true</PreserveCompilationReferences>
-    <UserSecretsId>AutoLike-4681b4fd-151f-4221-84a4-929d86723e4c</UserSecretsId>  
-    <AssemblyName>api8.autolike.cc</AssemblyName>
+        <TargetFramework>net6.0</TargetFramework>
+        <RootNamespace>AutoLike</RootNamespace>
+    
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <PublishTrimmed>true</PublishTrimmed>
+        <TrimMode>link</TrimMode>
+        <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
+        <TrimmerDefaultAction>link</TrimmerDefaultAction>
+
+        <IlcDisableReflection>false</IlcDisableReflection>
+
+        <IlcGenerateDgmlFile>false</IlcGenerateDgmlFile>
+        <IlcGenerateMapFile>false</IlcGenerateMapFile>
+        <IlcGenerateStackTraceData>false</IlcGenerateStackTraceData>
+        <IlcFoldIdenticalMethodBodies>true</IlcFoldIdenticalMethodBodies>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+        <DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
+
+
+        <!--<_SuppressWinFormsTrimError>true</_SuppressWinFormsTrimError>-->
+
+        <DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
+        <IlcInvariantGlobalization>true</IlcInvariantGlobalization>
+        <IlcFoldIdenticalMethodBodies>true</IlcFoldIdenticalMethodBodies>
+        <IlcOptimizationPreference>Size</IlcOptimizationPreference>
+        <CustomResourceTypesSupport>true</CustomResourceTypesSupport>
+
+
+        <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+        <!--<GenerateRuntimeConfigurationFiles>false</GenerateRuntimeConfigurationFiles>
+        <GenerateDependencyFile>false</GenerateDependencyFile>
+        <DebugSymbols>false</DebugSymbols>
+        <DebugType>None</DebugType>-->
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <BaseOutputPath>$(SolutionDir)output</BaseOutputPath>
+        <AssemblyName>api8.autolike.cc</AssemblyName>
+
   </PropertyGroup>
 
   <ItemGroup>
@@ -37,6 +71,12 @@
 
   <ItemGroup>
     <None Remove="api8.autolike.cc.service" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="api8.autolike.cc.service">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
