@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -29,7 +30,9 @@ public class Program
         try
         {
             Log.Information("Starting AutoLike.IdentityServer.");
-            var builder = WebApplication.CreateBuilder(args); 
+            var builder = WebApplication.CreateBuilder(args);
+            builder.WebHost.UseContentRoot(Directory.GetCurrentDirectory());
+            builder.Host.UseContentRoot(Directory.GetCurrentDirectory());
             builder.Host.AddAppSettingsSecretsJson()
                 .UseAutofac()
                 .UseSerilog();
