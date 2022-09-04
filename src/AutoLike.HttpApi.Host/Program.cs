@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using AutoLike.Transactions;
 using Microsoft.AspNetCore.Builder;
@@ -29,14 +30,33 @@ public class Program
 
         try
         {
+            var contentRoot = Directory.GetCurrentDirectory();
+            var webRoot = Path.Combine(contentRoot, "wwwroot");
+
+            var host = new WebHostBuilder()
+                .UseKestrel()
+
+                   // set web root
+                   .UseContentRoot(contentRoot)  // set content root
+                .UseWebRoot(webRoot)
+                .Build();
+
+            host.Run();
+
             Log.Information("Starting AutoLike.HttpApi.Host.");
             var builder = WebApplication.CreateBuilder(args); 
             builder.WebHost.UseUrls("http://0.0.0.0:10002");
+            builder.WebHost
+                .UseWebRoot(contentRoot)
+                .UseContentRoot(contentRoot);
             builder.Host.AddAppSettingsSecretsJson()
                 .UseAutofac()
-                .UseSerilog();
+                .UseSerilog()
+                .UseContentRoot(contentRoot) ;
+                
             await builder.AddApplicationAsync<AutoLikeHttpApiHostModule>();
             var app = builder.Build();
+          
             await app.InitializeApplicationAsync();
             await app.RunAsync();
             return 0;
