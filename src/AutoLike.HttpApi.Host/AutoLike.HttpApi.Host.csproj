@@ -8,6 +8,7 @@
     
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>  
+    <AssemblyName>api8.autolike.cc</AssemblyName>
   </PropertyGroup> 
   <ItemGroup>
     <PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
