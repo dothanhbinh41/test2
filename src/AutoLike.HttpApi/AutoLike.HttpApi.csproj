@@ -3,11 +3,21 @@
   <Import Project="..\..\common.props" />
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <RootNamespace>AutoLike</RootNamespace>
-	  <AssemblyName>api8.autolike.cc</AssemblyName>
+        <TargetFramework>net6.0</TargetFramework>
+        <RootNamespace>AutoLike</RootNamespace>
+        <AssemblyName>api8.autolike.cc</AssemblyName>
 
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="api8.autolike.cc.service" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="api8.autolike.cc.service">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\AutoLike.Application.Contracts\AutoLike.Application.Contracts.csproj" />
