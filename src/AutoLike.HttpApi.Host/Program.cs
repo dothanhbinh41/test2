@@ -35,7 +35,7 @@ public class Program
             Log.Information("Starting AutoLike.HttpApi.Host.");
             var builder = WebApplication.CreateBuilder(args);
             builder.WebHost.UseUrls("http://0.0.0.0:10002");
-            builder.WebHost.UseContentRoot(AppContext.BaseDirectory);
+            builder.Host.UseContentRoot(AppContext.BaseDirectory);
             builder.Host.AddAppSettingsSecretsJson()
                 .UseAutofac()
                 .UseSerilog();
