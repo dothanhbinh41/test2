@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
@@ -37,6 +38,12 @@ public class Program
                 .UseAutofac()
                 .UseSerilog();
             builder.WebHost.UseUrls("http://0.0.0.0:10001");
+            builder.WebHost.ConfigureAppConfiguration((c, x) =>
+             {
+
+                 x.AddConfiguration(Configuration);
+
+            });
             await builder.AddApplicationAsync<AutoLikeIdentityServerModule>();
             var app = builder.Build(); 
             await app.InitializeApplicationAsync();
@@ -53,4 +60,11 @@ public class Program
             Log.CloseAndFlush();
         }
     }
+
+    public static IConfiguration Configuration { get; } = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true) // reloadOnChange Whether the configuration should be reloaded if the file changes.
+            .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ENVIRONMENT")}.json", optional: true, reloadOnChange: true)
+            .AddEnvironmentVariables() // Environment Variables override all other, ** THIS SHOULD ALWAYS BE LAST
+            .Build();
 }
