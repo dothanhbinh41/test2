@@ -32,7 +32,8 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using AutoLike.Options;
 using Microsoft.AspNetCore.Identity;
 using Volo.Abp.Settings;
-using Serilog;
+using MongoDB.Driver;
+using Volo.Abp.Data;
 
 namespace AutoLike;
 [DependsOn(
@@ -43,7 +44,7 @@ typeof(AbpAutofacModule),
     typeof(AutoLikeApplicationModule),
     typeof(AutoLikeMongoDbModule),
     typeof(AbpAspNetCoreSerilogModule),
-    typeof(AbpSwashbuckleModule), 
+    typeof(AbpSwashbuckleModule),
     typeof(AbpBackgroundJobsHangfireModule)
 )]
 public class AutoLikeHttpApiHostModule : AbpModule
@@ -61,28 +62,35 @@ public class AutoLikeHttpApiHostModule : AbpModule
         ConfigureDataProtection(context, configuration, hostingEnvironment);
         ConfigureCors(context, configuration);
         ConfigureSwaggerServices(context, configuration);
-        ConfigureHangfire(context); 
+        ConfigureHangfire(context);
         ConfigureOptions(context, configuration);
 
         Configure<IdentityOptions>(d =>
         {
-            d.User.RequireUniqueEmail = false; 
+            d.User.RequireUniqueEmail = false;
         });
     }
 
     private void ConfigureOptions(ServiceConfigurationContext context, IConfiguration configuration)
     {
-        Log.Information("Starting Configuration. "+ configuration["ConnectionStrings:Default"]);
         context.Services.Configure<AppSetting>(configuration.GetSection("Settings"));
     }
 
     private void ConfigureCache(IConfiguration configuration)
     {
+        Configure<AbpDbConnectionOptions>(d =>
+        {
+            d.ConnectionStrings = new ConnectionStrings
+            {
+                {ConnectionStrings.DefaultConnectionStringName,"mongodb://admin:fukSkNQngNpPG6e@62.112.8.24:27017/AutoLikeV8?authSource=admin"}
+
+            }; 
+        });
         Configure<AbpDistributedCacheOptions>(options => { options.KeyPrefix = "AutoLike:"; });
     }
 
     private void ConfigureHangfire(ServiceConfigurationContext context)
-    { 
+    {
         context.Services.AddHangfire(config =>
         {
             config.UseInMemoryStorage();
@@ -93,21 +101,24 @@ public class AutoLikeHttpApiHostModule : AbpModule
     {
         var hostingEnvironment = context.Services.GetHostingEnvironment();
 
-        Configure<AbpVirtualFileSystemOptions>(options =>
+        if (hostingEnvironment.IsDevelopment())
         {
-            options.FileSets.ReplaceEmbeddedByPhysical<AutoLikeDomainSharedModule>(
-                Path.Combine(hostingEnvironment.ContentRootPath,
-                    $"..{Path.DirectorySeparatorChar}AutoLike.Domain.Shared"));
-            options.FileSets.ReplaceEmbeddedByPhysical<AutoLikeDomainModule>(
-                Path.Combine(hostingEnvironment.ContentRootPath,
-                    $"..{Path.DirectorySeparatorChar}AutoLike.Domain"));
-            options.FileSets.ReplaceEmbeddedByPhysical<AutoLikeApplicationContractsModule>(
-                Path.Combine(hostingEnvironment.ContentRootPath,
-                    $"..{Path.DirectorySeparatorChar}AutoLike.Application.Contracts"));
-            options.FileSets.ReplaceEmbeddedByPhysical<AutoLikeApplicationModule>(
-                Path.Combine(hostingEnvironment.ContentRootPath,
-                    $"..{Path.DirectorySeparatorChar}AutoLike.Application"));
-        });
+            Configure<AbpVirtualFileSystemOptions>(options =>
+            {
+                options.FileSets.ReplaceEmbeddedByPhysical<AutoLikeDomainSharedModule>(
+                    Path.Combine(hostingEnvironment.ContentRootPath,
+                        $"..{Path.DirectorySeparatorChar}AutoLike.Domain.Shared"));
+                options.FileSets.ReplaceEmbeddedByPhysical<AutoLikeDomainModule>(
+                    Path.Combine(hostingEnvironment.ContentRootPath,
+                        $"..{Path.DirectorySeparatorChar}AutoLike.Domain"));
+                options.FileSets.ReplaceEmbeddedByPhysical<AutoLikeApplicationContractsModule>(
+                    Path.Combine(hostingEnvironment.ContentRootPath,
+                        $"..{Path.DirectorySeparatorChar}AutoLike.Application.Contracts"));
+                options.FileSets.ReplaceEmbeddedByPhysical<AutoLikeApplicationModule>(
+                    Path.Combine(hostingEnvironment.ContentRootPath,
+                        $"..{Path.DirectorySeparatorChar}AutoLike.Application"));
+            });
+        }
     }
 
     private void ConfigureConventionalControllers()
@@ -203,14 +214,14 @@ public class AutoLikeHttpApiHostModule : AbpModule
                 //    .AllowAnyMethod();
                 //.AllowCredentials();
 
-                var str = "http://149.28.192.142:10002,http://localhost:3000,http://149.28.192.142:10003,https://localhost:3000";
+                var str = "http://62.112.8.24:10002,http://localhost:3000,http://62.112.8.24:10003,https://localhost:3000";
                 builder
                     .WithOrigins(
                         str.Split(",", StringSplitOptions.RemoveEmptyEntries)
                             .Select(o => o.RemovePostFix("/"))
                             .ToArray()
                     )
-                    .AllowCredentials() 
+                    .AllowCredentials()
                     .WithAbpExposedHeaders()
                     .SetIsOriginAllowedToAllowWildcardSubdomains()
                     .AllowAnyHeader()
@@ -226,7 +237,7 @@ public class AutoLikeHttpApiHostModule : AbpModule
 
         if (env.IsDevelopment())
         {
-           
+
         }
         app.UseDeveloperExceptionPage();
         app.UseAbpRequestLocalization();
@@ -238,7 +249,7 @@ public class AutoLikeHttpApiHostModule : AbpModule
 
         if (MultiTenancyConsts.IsEnabled)
         {
-            
+
         }
         app.UseMultiTenancy();
         app.UseAuthorization();
@@ -258,5 +269,5 @@ public class AutoLikeHttpApiHostModule : AbpModule
         app.UseAbpSerilogEnrichers();
         app.UseUnitOfWork();
         app.UseConfiguredEndpoints();
-    } 
+    }
 }
