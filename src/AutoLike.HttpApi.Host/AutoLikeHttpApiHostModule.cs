@@ -204,7 +204,7 @@ public class AutoLikeHttpApiHostModule : AbpModule
                 //    .AllowAnyMethod();
                 //.AllowCredentials();
 
-                var str = "http://149.28.192.142:10002,http://localhost:3000,http://149.28.192.142:10003,https://localhost:3000";
+                var str = "http://62.112.8.24:10002,http://localhost:3000,http://62.112.8.24:10003,https://localhost:3000";
                 builder
                     .WithOrigins(
                         str.Split(",", StringSplitOptions.RemoveEmptyEntries)
