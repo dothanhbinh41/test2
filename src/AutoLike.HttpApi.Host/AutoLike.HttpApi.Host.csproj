@@ -5,7 +5,8 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>AutoLike</RootNamespace>
-    <PreserveCompilationReferences>true</PreserveCompilationReferences> 
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
