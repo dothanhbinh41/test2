@@ -10,7 +10,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <PublishTrimmed>true</PublishTrimmed>
         <TrimMode>link</TrimMode>
-
+        <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
         <TrimmerDefaultAction>link</TrimmerDefaultAction>
 
         <IlcDisableReflection>false</IlcDisableReflection>
