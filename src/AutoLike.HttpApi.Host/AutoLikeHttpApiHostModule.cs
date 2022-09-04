@@ -209,7 +209,7 @@ public class AutoLikeHttpApiHostModule : AbpModule
                 //    .AllowAnyMethod();
                 //.AllowCredentials();
 
-                var str = "https://www8.autolike.cc,*.autolike.cc,https://*.autolike.cc";
+                var str = "https://www8.autolike.cc,*.autolike.cc,https://*.autolike.cc,https://coruscating-sherbet-01757b.netlify.app";
                 builder
                     .WithOrigins(
                         str.Split(",", StringSplitOptions.RemoveEmptyEntries)

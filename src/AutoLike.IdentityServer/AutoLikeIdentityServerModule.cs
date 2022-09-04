@@ -164,7 +164,8 @@ public class AutoLikeIdentityServerModule : AbpModule
             {
                 var origins = new string[]
                 {
-                    "https://www8.autolike.cc", 
+                    "https://www8.autolike.cc",
+                    "https://coruscating-sherbet-01757b.netlify.app",
                     "https://*.autolike.cc",
                 };
                 builder
