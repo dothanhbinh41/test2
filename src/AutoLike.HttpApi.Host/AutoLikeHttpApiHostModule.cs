@@ -207,9 +207,8 @@ public class AutoLikeHttpApiHostModule : AbpModule
                 //    .SetIsOriginAllowedToAllowWildcardSubdomains()
                 //    .AllowAnyHeader()
                 //    .AllowAnyMethod();
-                //.AllowCredentials();
-
-                var str = "https://www8.autolike.cc,*.autolike.cc,https://*.autolike.cc,https://coruscating-sherbet-01757b.netlify.app";
+                //.AllowCredentials(); 
+                var str = "https://www8.autolike.cc,*.autolike.cc,https://*.autolike.cc,http://locahost:3000,https://locahost:3000";
                 builder
                     .WithOrigins(
                         str.Split(",", StringSplitOptions.RemoveEmptyEntries)

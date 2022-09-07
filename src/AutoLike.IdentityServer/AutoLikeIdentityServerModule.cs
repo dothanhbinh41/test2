@@ -167,6 +167,8 @@ public class AutoLikeIdentityServerModule : AbpModule
                     "https://www8.autolike.cc",
                     "https://coruscating-sherbet-01757b.netlify.app",
                     "https://*.autolike.cc",
+                    "http://locahost:3000",
+                    "https://locahost:3000"
                 };
                 builder
                     .WithOrigins(origins)
