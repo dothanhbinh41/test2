@@ -208,7 +208,7 @@ public class AutoLikeHttpApiHostModule : AbpModule
                 //    .AllowAnyHeader()
                 //    .AllowAnyMethod();
                 //.AllowCredentials(); 
-                var str = "https://www8.autolike.cc,*.autolike.cc,https://*.autolike.cc,http://locahost:3000,https://locahost:3000";
+                var str = "https://www8.autolike.cc,*.autolike.cc,https://*.autolike.cc,http://localhost:3000,https://localhost:3000";
                 builder
                     .WithOrigins(
                         str.Split(",", StringSplitOptions.RemoveEmptyEntries)

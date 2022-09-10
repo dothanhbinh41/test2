@@ -164,11 +164,10 @@ public class AutoLikeIdentityServerModule : AbpModule
             {
                 var origins = new string[]
                 {
-                    "https://www8.autolike.cc",
-                    "https://coruscating-sherbet-01757b.netlify.app",
+                    "https://www8.autolike.cc", 
                     "https://*.autolike.cc",
-                    "http://locahost:3000",
-                    "https://locahost:3000"
+                    "http://localhost:3000",
+                    "https://localhost:3000"
                 };
                 builder
                     .WithOrigins(origins)
